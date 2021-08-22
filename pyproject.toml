@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "plox"
+version = "0.0.1"
+description = "A Python implementation of Lox"
+authors = ["Sam Thomson <sp.thomson@outlook.com>"]
+license = "GNU Affero General Public License"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+black = "^21.7b0"
+pre-commit = "^2.14.0"
+flake8 = "^3.9.2"
+pep8-naming = "^0.12.1"
+tox = "^3.24.3"
+isort = "^5.9.3"
+mypy = "^0.910"
+
+[tool.poetry.scripts]
+plox = "plox.cli:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+target-version = ['py39']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | build
+    | dist
+  )/
+)
+'''
+
+[tool.isort]
+profile = "black"
