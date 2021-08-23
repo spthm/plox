@@ -7,4 +7,4 @@ def main():
     )
     parser.add_argument("script", metavar="FILE", nargs="?", help="Lox script to run")
 
-    args = parser.parse_args()
+    _ = parser.parse_args()
