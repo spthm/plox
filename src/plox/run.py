@@ -1,12 +1,12 @@
 import sys
 from pathlib import Path
 
-from plox.scanner import scan_tokens
+from plox.scanner import Scanner
 
 
 class Interpreter:
     def run(self, source: str):
-        tokens = scan_tokens(source)
+        tokens = Scanner(source).scan_tokens()
         for t in tokens:
             print(t)
 

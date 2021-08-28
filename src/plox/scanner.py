@@ -23,18 +23,20 @@ _KEYWORDS = {
 class Scanner:
     def __init__(self, source: str):
         self._source = source
-        self._tokens: list[Token] = list()
+        self._tokens: list[Token] = []
 
         self._start = 0
         self._current = 0
         self._lno = 1
 
-    def scan_tokens(self):
+    def scan_tokens(self) -> list[Token]:
         while not self._at_end():
             self._start = self._current
             self._scan_token()
 
         self._tokens.append(Token(TokenType.EOF, "", None, self._lno))
+
+        return list(self._tokens)
 
     def _add_token(self, kind: TokenType, literal: object = None):
         text = self._source[self._start : self._current]
@@ -101,6 +103,7 @@ class Scanner:
         return self._source[self._current + 1]
 
     def _scan_token(self):
+        # pylint: disable=too-many-branches
         char = self._advance()
 
         if char == "(":
