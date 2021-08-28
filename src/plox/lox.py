@@ -8,7 +8,7 @@ def _report(lno: int, where: str, msg: str):
     print(f"[line {lno}] Error{where}: {msg}", file=sys.stderr)
 
 
-class Interpreter:
+class Lox:
     def run(self, source: str):
         tokens = Scanner(source).scan_tokens()
         for t in tokens:
