@@ -4,6 +4,10 @@ from pathlib import Path
 from plox.scanner import Scanner
 
 
+def _report(lno: int, where: str, msg: str):
+    print(f"[line {lno}] Error{where}: {msg}", file=sys.stderr)
+
+
 class Interpreter:
     def run(self, source: str):
         tokens = Scanner(source).scan_tokens()
@@ -15,7 +19,7 @@ class Interpreter:
         try:
             self.run(source)
         except Exception as e:
-            self._report(-1, "", str(e))
+            _report(-1, "", str(e))
             sys.exit(65)
 
     def run_prompt(self):
@@ -28,7 +32,4 @@ class Interpreter:
             try:
                 self.run(source_line)
             except Exception as e:
-                self._report(-1, "", str(e))
-
-    def _report(self, lno: int, where: str, msg: str):
-        print(f"[line {lno}] Error{where}: {msg}", file=sys.stderr)
+                _report(-1, "", str(e))

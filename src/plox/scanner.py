@@ -20,6 +20,21 @@ _KEYWORDS = {
 }
 
 
+def _is_alpha(char: str) -> bool:
+    return "a" <= char <= "z" or "A" <= char <= "Z" or char == "_"
+
+
+def _is_alphanum(char: str) -> bool:
+    return _is_alpha(char) or _is_digit(char)
+
+
+def _is_digit(char: str) -> bool:
+    assert len(char) == 1
+    # char.isdigit() allows other characters, that are not valid for float()
+    # conversions, e.g. Kharosthi Numerals
+    return "0" <= char <= "9"
+
+
 class Scanner:
     def __init__(self, source: str):
         self._source = source
@@ -48,24 +63,12 @@ class Scanner:
         return char
 
     def _identifier(self):
-        while self._is_alphanum(self._peek()):
+        while _is_alphanum(self._peek()):
             self._advance()
 
         text = self._source[self._start : self._current]
         kind = _KEYWORDS.get(text, TokenType.IDENTIFIER)
         self._add_token(kind)
-
-    def _is_alpha(self, char: str) -> bool:
-        return "a" <= char <= "z" or "A" <= char <= "Z" or char == "_"
-
-    def _is_alphanum(self, char: str) -> bool:
-        return self._is_alpha(char) or self._is_digit(char)
-
-    def _is_digit(self, char: str) -> bool:
-        assert len(char) == 1
-        # char.isdigit() allows other characters, that are not valid for float()
-        # conversions, e.g. Kharosthi Numerals
-        return "0" <= char <= "9"
 
     def _at_end(self) -> bool:
         return self._current >= len(self._source)
@@ -78,14 +81,14 @@ class Scanner:
         return True
 
     def _number(self):
-        while self._is_digit(self._peek()):
+        while _is_digit(self._peek()):
             self._advance()
 
-        if self._peek() == "." and self._is_digit(self._peek_next()):
+        if self._peek() == "." and _is_digit(self._peek_next()):
             # Consume the "."
             self._advance()
 
-            while self._is_digit(self._peek()):
+            while _is_digit(self._peek()):
                 self._advance()
 
         self._add_token(
@@ -162,9 +165,9 @@ class Scanner:
         elif char == '"':
             self._string()
 
-        elif self._is_digit(char):
+        elif _is_digit(char):
             self._number()
-        elif self._is_alpha(char):
+        elif _is_alpha(char):
             self._identifier()
 
         else:
