@@ -165,22 +165,16 @@ class Scanner:
             self._identifier()
 
         else:
-            # TODO: we want to keep scanning. We need to call an error function (free
-            # or one that is provided to __init__) or accumlate errors and return those
-            # at the end of the scan. Maybe add a TokenType.ERROR?
             raise SyntaxError(f"Unexpected character: {char}")
 
     def _string(self):
-        # just while self._peek() I think; if at_end, peek() -> "\0"
-        # also, walrus operator :)
-        while self._peek() != '"' and not self._at_end():
+        while (peek := self._peek()) != '"' and not self._at_end():
             # Allow for multi-line strings.
-            if self._peek() == "\n":
+            if peek == "\n":
                 self._lno += 1
             self._advance()
 
         if self._at_end():
-            # TODO: we want to return and then keep scanning.
             raise SyntaxError("Unterminated string")
 
         # The closing '"'
