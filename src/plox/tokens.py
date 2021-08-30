@@ -62,6 +62,9 @@ class Token:
         self._lno = lno
 
     def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Token):
+            return NotImplemented
+
         return (
             self._kind == other._kind
             and self._lexeme == other._lexeme
