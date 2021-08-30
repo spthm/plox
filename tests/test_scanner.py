@@ -8,32 +8,32 @@ from plox.tokens import Token, TokenType
 
 
 def test_identifiers():
-    src = """andy formless fo _ _123 _abc ab123
+    src = """
+    andy formless fo _ _123 _abc ab123
     abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_
     """
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
-        Token(TokenType.IDENTIFIER, "andy", None, 1),
-        Token(TokenType.IDENTIFIER, "formless", None, 1),
-        Token(TokenType.IDENTIFIER, "fo", None, 1),
-        Token(TokenType.IDENTIFIER, "_", None, 1),
-        Token(TokenType.IDENTIFIER, "_123", None, 1),
-        Token(TokenType.IDENTIFIER, "_abc", None, 1),
-        Token(TokenType.IDENTIFIER, "ab123", None, 1),
+        Token(TokenType.IDENTIFIER, "andy", None, 2),
+        Token(TokenType.IDENTIFIER, "formless", None, 2),
+        Token(TokenType.IDENTIFIER, "fo", None, 2),
+        Token(TokenType.IDENTIFIER, "_", None, 2),
+        Token(TokenType.IDENTIFIER, "_123", None, 2),
+        Token(TokenType.IDENTIFIER, "_abc", None, 2),
+        Token(TokenType.IDENTIFIER, "ab123", None, 2),
         Token(
             TokenType.IDENTIFIER,
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_",
             None,
-            2,
+            3,
         ),
-        Token(TokenType.EOF, "", None, 3),
+        Token(TokenType.EOF, "", None, 4),
     ]
 
 
 def test_keywords():
-    src = """and class else false for fun if nil or return super this true var while
-    """
+    src = "and class else false for fun if nil or return super this true var while"
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
@@ -52,12 +52,13 @@ def test_keywords():
         Token(TokenType.TRUE, "true", None, 1),
         Token(TokenType.VAR, "var", None, 1),
         Token(TokenType.WHILE, "while", None, 1),
-        Token(TokenType.EOF, "", None, 2),
+        Token(TokenType.EOF, "", None, 1),
     ]
 
 
 def test_numbers():
-    src = """123
+    src = """
+    123
     123.456
     .456
     123.
@@ -65,19 +66,18 @@ def test_numbers():
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
-        Token(TokenType.NUMBER, "123", 123.0, 1),
-        Token(TokenType.NUMBER, "123.456", 123.456, 2),
-        Token(TokenType.DOT, ".", None, 3),
-        Token(TokenType.NUMBER, "456", 456.0, 3),
-        Token(TokenType.NUMBER, "123", 123.0, 4),
+        Token(TokenType.NUMBER, "123", 123.0, 2),
+        Token(TokenType.NUMBER, "123.456", 123.456, 3),
         Token(TokenType.DOT, ".", None, 4),
-        Token(TokenType.EOF, "", None, 5),
+        Token(TokenType.NUMBER, "456", 456.0, 4),
+        Token(TokenType.NUMBER, "123", 123.0, 5),
+        Token(TokenType.DOT, ".", None, 5),
+        Token(TokenType.EOF, "", None, 6),
     ]
 
 
 def test_punctuators():
-    src = """(){};,+-*!===<=>=!=<>/.
-    """
+    src = "(){};,+-*!===<=>=!=<>/."
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
@@ -99,26 +99,28 @@ def test_punctuators():
         Token(TokenType.GREATER, ">", None, 1),
         Token(TokenType.SLASH, "/", None, 1),
         Token(TokenType.DOT, ".", None, 1),
-        Token(TokenType.EOF, "", None, 2),
+        Token(TokenType.EOF, "", None, 1),
     ]
 
 
 def test_strings():
-    src = """""
+    src = """
+    ""
     "string"
 
     """
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
-        Token(TokenType.STRING, '""', "", 1),
-        Token(TokenType.STRING, '"string"', "string", 2),
-        Token(TokenType.EOF, "", None, 4),
+        Token(TokenType.STRING, '""', "", 2),
+        Token(TokenType.STRING, '"string"', "string", 3),
+        Token(TokenType.EOF, "", None, 5),
     ]
 
 
 def test_whitespace():
-    src = """space    tabs				newlines
+    src = """
+    space    tabs				newlines
 
 
 
@@ -128,9 +130,9 @@ def test_whitespace():
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
-        Token(TokenType.IDENTIFIER, "space", None, 1),
-        Token(TokenType.IDENTIFIER, "tabs", None, 1),
-        Token(TokenType.IDENTIFIER, "newlines", None, 1),
-        Token(TokenType.IDENTIFIER, "end", None, 6),
-        Token(TokenType.EOF, "", None, 7),
+        Token(TokenType.IDENTIFIER, "space", None, 2),
+        Token(TokenType.IDENTIFIER, "tabs", None, 2),
+        Token(TokenType.IDENTIFIER, "newlines", None, 2),
+        Token(TokenType.IDENTIFIER, "end", None, 7),
+        Token(TokenType.EOF, "", None, 8),
     ]
