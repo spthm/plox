@@ -29,3 +29,5 @@ To update dependencies,
 ```
 make update
 ```
+
+[poetry]: https://python-poetry.org/
