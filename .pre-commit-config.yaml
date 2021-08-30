@@ -1,10 +1,17 @@
 repos:
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.9.3
+    hooks:
+    - id: isort
+      language_version: python3.9
+
   - repo: https://github.com/psf/black
     rev: 21.7b0
     hooks:
     - id: black
       language_version: python3.9
 
+  # Lint after formatting.
   - repo: https://gitlab.com/PyCQA/flake8
     rev: 3.9.2
     hooks:
@@ -12,10 +19,3 @@ repos:
       additional_dependencies:
           - pep8-naming
       language_version: python3.9
-
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.9.3
-    hooks:
-    - id: isort
-      language_version: python3.9
-
