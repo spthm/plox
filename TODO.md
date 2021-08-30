@@ -9,6 +9,10 @@ See `Scanner._scan_token` and `Scanner._string`.
 Provide an error handler to `Scanner.__init__`, define a free function to print errors, or define a `TokenType.ERROR` for invalid tokens.
 - Re-implement `_scan_token` so it functions more like a `switch` `case`, e.g. via a lookup; a chain of `if` `elif` is (probably) slower.
 
+### `ast_str`
+
+- `ast_str` should be the `__str__` method of an `AST` class.
+
 ## Non-reference `Lox`
 
 ### `Lox`
