@@ -21,7 +21,7 @@ def _ast_str(expr: Expr) -> str:
 @overload
 @_ast_str.register(Binary)
 def ast_str(expr: Binary) -> str:
-    return _parenthesize(expr.operator._lexeme, expr.left, expr.right)
+    return _parenthesize(expr.operator.lexeme, expr.left, expr.right)
 
 
 @overload
@@ -41,7 +41,7 @@ def ast_str(expr: Literal) -> str:
 @overload
 @_ast_str.register(Unary)
 def ast_str(expr: Unary) -> str:
-    return _parenthesize(expr.operator._lexeme, expr.right)
+    return _parenthesize(expr.operator.lexeme, expr.right)
 
 
 def ast_str(expr: Expr) -> str:

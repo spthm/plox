@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from enum import Enum, auto, unique
 
 
@@ -54,35 +55,12 @@ class TokenType(Enum):
     EOF = auto()
 
 
+@dataclass(frozen=True)
 class Token:
-    def __init__(self, kind: TokenType, lexeme: str, literal: object, lno: int):
-        self._kind = kind
-        self._lexeme = lexeme
-        self._literal = literal
-        self._lno = lno
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Token):
-            return NotImplemented
-
-        return (
-            self._kind == other._kind
-            and self._lexeme == other._lexeme
-            and self._literal == other._literal
-            and self._lno == other._lno
-        )
-
-    def __repr__(self) -> str:
-        # We use repr() for lexeme and literal so that, respectively, the empty string
-        # and None are printed.
-        return (
-            "Token("
-            f"kind={self._kind}"
-            f", lexeme={repr(self._lexeme)}"
-            f", literal={repr(self._literal)}"
-            f", lno={self._lno}"
-            ")"
-        )
+    kind: TokenType
+    lexeme: str
+    literal: object
+    lno: int
 
     def __str__(self) -> str:
-        return f"{self._kind} {self._lexeme} {self._literal}"
+        return f"{self.kind} {self.lexeme} {self.literal}"
