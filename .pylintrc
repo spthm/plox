@@ -41,6 +41,9 @@ notes=FIXME,
 # Expected format of line ending, e.g. empty (any line ending), LF or CRLF.
 expected-line-ending-format=LF
 
+# Allow comments with URLs to be longer than the prescribed line length.
+ignore-long-lines=^\s*#\s*<?https?://\S+>?$
+
 # Maximum number of characters on a single line.
 max-line-length=88
 
