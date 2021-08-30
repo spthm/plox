@@ -61,7 +61,7 @@ class Token:
         self._literal = literal
         self._lno = lno
 
-    def __eq__(self, other: Token):
+    def __eq__(self, other: object) -> bool:
         return (
             self._kind == other._kind
             and self._lexeme == other._lexeme
@@ -69,7 +69,7 @@ class Token:
             and self._lno == other._lno
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         # We use repr() for lexeme and literal so that, respectively, the empty string
         # and None are printed.
         return (
@@ -81,5 +81,5 @@ class Token:
             ")"
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self._kind} {self._lexeme} {self._literal}"

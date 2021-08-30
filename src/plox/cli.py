@@ -1,7 +1,7 @@
 import argparse
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         "plox", formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )

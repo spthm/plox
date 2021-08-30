@@ -53,7 +53,7 @@ class Scanner:
 
         return list(self._tokens)
 
-    def _add_token(self, kind: TokenType, literal: object = None):
+    def _add_token(self, kind: TokenType, literal: object = None) -> None:
         text = self._source[self._start : self._current]
         self._tokens.append(Token(kind, text, literal, self._lno))
 
@@ -62,7 +62,7 @@ class Scanner:
         self._current += 1
         return char
 
-    def _identifier(self):
+    def _identifier(self) -> None:
         while _is_alphanum(self._peek()):
             self._advance()
 
@@ -80,7 +80,7 @@ class Scanner:
         self._current += 1
         return True
 
-    def _number(self):
+    def _number(self) -> None:
         while _is_digit(self._peek()):
             self._advance()
 
@@ -105,7 +105,7 @@ class Scanner:
             return "\0"
         return self._source[self._current + 1]
 
-    def _scan_token(self):
+    def _scan_token(self) -> None:
         # pylint: disable=too-many-branches
         char = self._advance()
 
@@ -173,7 +173,7 @@ class Scanner:
         else:
             raise SyntaxError(f"Unexpected character: {char}")
 
-    def _string(self):
+    def _string(self) -> None:
         while (peek := self._peek()) != '"' and not self._at_end():
             # Allow for multi-line strings.
             if peek == "\n":
