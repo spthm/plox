@@ -30,13 +30,13 @@ def _is_alphanum(char: str) -> bool:
 
 def _is_digit(char: str) -> bool:
     assert len(char) == 1
-    # char.isdigit() allows other characters, that are not valid for float()
-    # conversions, e.g. Kharosthi Numerals
+    # char.isdigit() allows characters that are not valid
+    # for float conversions, e.g. Kharosthi Numerals
     return "0" <= char <= "9"
 
 
 class Scanner:
-    def __init__(self, source: str):
+    def __init__(self, source: str) -> None:
         self._source = source
         self._tokens: list[Token] = []
 
