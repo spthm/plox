@@ -1,15 +1,20 @@
 import sys
 from pathlib import Path
 
+from plox.ast_printer import ast_str
 from plox.errors import _report
+from plox.parser import Parser
 from plox.scanner import Scanner
 
 
 class Lox:
     def run(self, source: str) -> None:
         tokens = Scanner(source).scan_tokens()
-        for t in tokens:
-            print(t)
+        expr = Parser(tokens).parse()
+        if expr is None:
+            return
+
+        print(ast_str(expr))
 
     def run_file(self, path: Path) -> None:
         source = path.read_text()
