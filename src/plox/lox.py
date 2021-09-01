@@ -1,11 +1,8 @@
 import sys
 from pathlib import Path
 
+from plox.errors import _report
 from plox.scanner import Scanner
-
-
-def _report(lno: int, where: str, msg: str) -> None:
-    print(f"[line {lno}] Error{where}: {msg}", file=sys.stderr)
 
 
 class Lox:

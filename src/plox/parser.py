@@ -1,11 +1,48 @@
+from typing import Optional
+
+from plox.errors import ParserError, _report
 from plox.expressions import Binary, Expr, Grouping, Literal, Unary
 from plox.tokens import Token, TokenType
+
+
+def _report_error(e: ParserError) -> None:
+    t = e.token
+    where = "at end" if t.kind == TokenType.EOF else f"at '{t.lexeme}'"
+    _report(t.lno, where, e.message)
 
 
 class Parser:
     def __init__(self, tokens: list[Token]) -> None:
         self._tokens = tokens
         self._current = 0
+
+    def parse(self) -> Optional[Expr]:
+        try:
+            return self._expression()
+        except ParserError as e:
+            _report_error(e)
+            return None
+
+    def _synchronize(self) -> None:
+        self._advance()
+
+        while not self._at_end():
+            if self._previous().kind == TokenType.SEMICOLON:
+                return
+
+            if self._peek().kind in {
+                TokenType.CLASS,
+                TokenType.FUN,
+                TokenType.VAR,
+                TokenType.FOR,
+                TokenType.IF,
+                TokenType.WHILE,
+                TokenType.PRINT,
+                TokenType.RETURN,
+            }:
+                return
+
+            self._advance()
 
     def _expression(self) -> Expr:
         return self._equality()
@@ -79,6 +116,8 @@ class Parser:
             self._consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.")
             return Grouping(expr)
 
+        raise ParserError("Expected expression.", self._peek())
+
     def _advance(self) -> Token:
         if not self._at_end():
             self._current += 1
@@ -91,6 +130,12 @@ class Parser:
         if self._at_end():
             return False
         return self._peek().kind == kind
+
+    def _consume(self, kind: TokenType, message: str) -> Token:
+        if self._check(kind):
+            return self._advance()
+
+        raise ParserError(message, self._peek())
 
     def _match(self, *args: TokenType) -> bool:
         if any(self._check(kind) for kind in args):
