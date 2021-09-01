@@ -30,6 +30,11 @@ class Lox:
                 source_line = input("> ")
             except EOFError:
                 break
+            except KeyboardInterrupt:
+                source_line = ""
+
+            if not source_line:
+                continue
 
             try:
                 self.run(source_line)
