@@ -60,7 +60,7 @@ min-similarity-lines=5
 [BASIC]
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=c,e,i,j,k,m,n,t,x,op
+good-names=c,e,i,j,k,m,n,t,x,gt,lt,op
 
 
 [DESIGN]
