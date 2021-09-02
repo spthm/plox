@@ -1,3 +1,4 @@
+from plox.errors import ScannerError
 from plox.tokens import Token, TokenType
 
 _KEYWORDS = {
@@ -171,7 +172,7 @@ class Scanner:
             self._identifier()
 
         else:
-            raise SyntaxError(f"Unexpected character: {char}")
+            raise ScannerError(f"Unexpected character: {char}")
 
     def _string(self) -> None:
         while (peek := self._peek()) != '"' and not self._at_end():
@@ -181,7 +182,7 @@ class Scanner:
             self._advance()
 
         if self._at_end():
-            raise SyntaxError("Unterminated string")
+            raise ScannerError("Unterminated string")
 
         # The closing '"'
         self._advance()
