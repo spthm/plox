@@ -21,11 +21,28 @@ Currently, this results in a hard crash with an `IndexError` from `parse()`.
 
 - `ast_str` should be the `__str__` method of an `AST` class.
 
+### `evaluate`
+
+- We return `False` for equality comparison of `NaN`, but should return `True`.
+
+## Challenges
+
+### 6: Parsing Expressions
+
+2. Implement support for the ternary operator.
+To [match C](https://en.cppreference.com/w/cpp/language/operator_precedence), the grammar (as of Chapter 6) is `conditional-expression → ( equality '?' expression ':' conditional-expression ) | equality ;`.
+Note also that there are other [ternary operators](https://en.wikipedia.org/wiki/Ternary_operation).
+
+3. Add error productions for binary operators without a left-hand operand.
+The grammar (as of Chapter 6) becomes `unary → ( ( "!" | "-" | "+" | "*" | "/" | "==" | "!=" | "<" | "<=" | ">" | ">=" ) unary ) | primary ;` but, after parsing the full `Unary` expression, `Parser._unary` raises a `ParserError` if the `op` is not in `{ "!", "-" }`.
+
 ## Non-reference `Lox`
 
 ### `Lox`
 
 - Distinguish between `int` and `float` numeric types.
+- Require `++` for string concatenation (I think this is a neat idea).
+- Do not return `True` for equality comparison of `NaN` values.
 
 ### `Scanner`
 
