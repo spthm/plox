@@ -5,8 +5,9 @@ from plox.tokens import Token
 
 class ScannerError(Exception):
     # pylint: disable=super-init-not-called
-    def __init__(self, message: str) -> None:
+    def __init__(self, message: str, lno: int) -> None:
         self.message = message
+        self.lno = lno
 
 
 class ParserError(Exception):
@@ -23,7 +24,7 @@ class ExecutionError(Exception):
         self.token = token
 
 
-def _report(lno: int, where: str, message: str) -> None:
+def report(lno: int, where: str, message: str) -> None:
     if where:
         where = f" {where.lstrip()}"
     print(f"[line {lno}] Error{where}: {message}", file=sys.stderr)

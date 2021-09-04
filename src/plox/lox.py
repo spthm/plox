@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-from plox.errors import _report
+from plox.errors import ExecutionError, ParserError, ScannerError
 from plox.interpret import interpret
 from plox.parser import Parser
 from plox.scanner import Scanner
@@ -17,9 +17,10 @@ class Lox:
         source = path.read_text()
         try:
             self.run(source)
-        except Exception as e:
-            _report(-1, "", str(e))
+        except (ParserError, ScannerError):
             sys.exit(65)
+        except ExecutionError:
+            sys.exit(70)
 
     def run_prompt(self) -> None:
         while True:
@@ -35,5 +36,5 @@ class Lox:
 
             try:
                 self.run(source_line)
-            except Exception as e:
-                _report(-1, "", str(e))
+            except (ExecutionError, ParserError, ScannerError):
+                pass

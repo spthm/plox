@@ -1,6 +1,6 @@
-from plox.errors import ExecutionError, _report
-from plox.expressions import Expr
+from plox.errors import ExecutionError, report
 from plox.evaluate import evaluate
+from plox.expressions import Expr
 
 
 def interpret(expr: Expr) -> None:
@@ -8,7 +8,7 @@ def interpret(expr: Expr) -> None:
         value = evaluate(expr)
         print(_stringify(value))
     except ExecutionError as e:
-        _report(e.token.lno, "", e.message)
+        report(e.token.lno, "", e.message)
         raise
 
 
@@ -23,6 +23,6 @@ def _stringify(value: object) -> str:
     text = str(value)
 
     if isinstance(value, float) and text.endswith(".0"):
-            text = text[:-2]
+        text = text[:-2]
 
     return text

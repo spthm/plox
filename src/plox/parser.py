@@ -1,14 +1,14 @@
 from typing import Optional
 
-from plox.errors import ParserError, _report
+from plox.errors import ParserError, report
 from plox.expressions import Binary, Expr, Grouping, Literal, Unary
 from plox.tokens import Token, TokenType
 
 
-def _report_error(e: ParserError) -> None:
+def _report(e: ParserError) -> None:
     t = e.token
     where = "at end" if t.kind == TokenType.EOF else f"at '{t.lexeme}'"
-    _report(t.lno, where, e.message)
+    report(t.lno, where, e.message)
 
 
 class Parser:
@@ -20,8 +20,8 @@ class Parser:
         try:
             return self._expression()
         except ParserError as e:
-            _report_error(e)
-            return None
+            _report(e)
+            raise
 
     def _synchronize(self) -> None:
         self._advance()
