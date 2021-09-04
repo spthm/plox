@@ -1,28 +1,10 @@
 from functools import singledispatch
 from operator import add, eq, ge, gt, le, lt, mul, ne, neg, sub, truediv
-from typing import overload
+from typing import Protocol, overload
 
 from plox.errors import ExecutionError
 from plox.expressions import Binary, Expr, Grouping, Literal, Unary
 from plox.tokens import Token, TokenType
-
-_binary_op_lookup = {
-    TokenType.BANG_EQUAL: ne,
-    TokenType.EQUAL_EQUAL: eq,
-    TokenType.GREATER: gt,
-    TokenType.GREATER_EQUAL: ge,
-    TokenType.LESS: lt,
-    TokenType.LESS_EQUAL: le,
-    TokenType.MINUS: sub,
-    TokenType.PLUS: add,  # This works for strings and numbers
-    TokenType.SLASH: truediv,
-    TokenType.STAR: mul,
-}
-
-_unary_op_lookup = {
-    TokenType.BANG: lambda x: not _truthy(x),
-    TokenType.MINUS: neg,
-}
 
 
 def _binary_op_error(op: Token) -> str:
@@ -43,6 +25,57 @@ def _truthy(x: object) -> bool:
     return True
 
 
+class OpCheck(Protocol):
+    def __call__(self, *args: object) -> bool:
+        ...
+
+
+def _is_numeric(*args: object) -> bool:
+    return all(isinstance(x, float) for x in args)
+
+
+def _is_string(*args: object) -> bool:
+    return all(isinstance(x, str) for x in args)
+
+
+def _is_numeric_or_string(*args: object) -> bool:
+    return _is_numeric(*args) or _is_string(*args)
+
+
+_binary_op_fn = {
+    TokenType.BANG_EQUAL: ne,
+    TokenType.EQUAL_EQUAL: eq,
+    TokenType.GREATER: gt,
+    TokenType.GREATER_EQUAL: ge,
+    TokenType.LESS: lt,
+    TokenType.LESS_EQUAL: le,
+    TokenType.MINUS: sub,
+    TokenType.PLUS: add,  # This works for strings and numbers
+    TokenType.SLASH: truediv,
+    TokenType.STAR: mul,
+}
+
+_binary_op_check: dict[TokenType, OpCheck] = {
+    TokenType.GREATER: _is_numeric,
+    TokenType.GREATER_EQUAL: _is_numeric,
+    TokenType.LESS: _is_numeric,
+    TokenType.LESS_EQUAL: _is_numeric,
+    TokenType.MINUS: _is_numeric,
+    TokenType.PLUS: _is_numeric_or_string,
+    TokenType.SLASH: _is_numeric,
+    TokenType.STAR: _is_numeric,
+}
+
+_unary_op_fn = {
+    TokenType.BANG: lambda x: not _truthy(x),
+    TokenType.MINUS: neg,
+}
+
+_unary_op_check = {
+    TokenType.MINUS: _is_numeric,
+}
+
+
 # mypy's @overload is buggy for @singledispatch. Use of the separate _evaluate here
 # is a workaround https://github.com/python/mypy/issues/8356.
 
@@ -55,19 +88,23 @@ def _evaluate(expr: Expr) -> object:
 @overload
 @_evaluate.register(Binary)
 def evaluate(expr: Binary) -> object:
-    # We evaluate operands in left-to-right order.
+    # We evaluate operands in left-to-right order, and evaluate both before type
+    # checking either.
     left = evaluate(expr.left)
     right = evaluate(expr.right)
 
+    check = _binary_op_check.get(expr.operator.kind, None)
+    if check is not None and not check(left, right):
+        msg = _binary_op_error(expr.operator)
+        raise ExecutionError(msg, expr.operator)
+
     try:
-        op = _binary_op_lookup[expr.operator.kind]
-        return op(left, right)
+        op = _binary_op_fn[expr.operator.kind]
     except KeyError as e:
         # This is an internal error.
         raise RuntimeError(f"unexpected Binary operator: {expr.operator.kind}") from e
-    except TypeError as e:
-        msg = _binary_op_error(expr.operator)
-        raise ExecutionError(msg, expr.operator) from e
+
+    return op(left, right)
 
 
 @overload
@@ -87,15 +124,18 @@ def evaluate(expr: Literal) -> object:
 def evaluate(expr: Unary) -> object:
     right = evaluate(expr.right)
 
+    check = _unary_op_check.get(expr.operator.kind, None)
+    if check is not None and not check(right):
+        msg = _unary_op_error(expr.operator)
+        raise ExecutionError(msg, expr.operator)
+
     try:
-        op = _unary_op_lookup[expr.operator.kind]
-        return op(right)
+        op = _unary_op_fn[expr.operator.kind]
     except KeyError as e:
         # This is an internal error.
         raise RuntimeError(f"unexpected Unary operator: {expr.operator.kind}") from e
-    except TypeError as e:
-        msg = _unary_op_error(expr.operator)
-        raise ExecutionError(msg, expr.operator) from e
+
+    return op(right)
 
 
 def evaluate(expr: Expr) -> object:
