@@ -2,16 +2,19 @@ import sys
 from pathlib import Path
 
 from plox.errors import ExecutionError, ParserError, ScannerError
-from plox.interpret import interpret
+from plox.interpreter import Interpreter
 from plox.parser import Parser
 from plox.scanner import Scanner
 
 
 class Lox:
+    def __init__(self) -> None:
+        self._interpreter = Interpreter()
+
     def run(self, source: str) -> None:
         tokens = Scanner(source).scan_tokens()
         expr = Parser(tokens).parse()
-        interpret(expr)
+        self._interpreter.interpret(expr)
 
     def run_file(self, path: Path) -> None:
         source = path.read_text()

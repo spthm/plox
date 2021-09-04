@@ -3,13 +3,14 @@ from plox.evaluate import evaluate
 from plox.expressions import Expr
 
 
-def interpret(expr: Expr) -> None:
-    try:
-        value = evaluate(expr)
-        print(_stringify(value))
-    except ExecutionError as e:
-        report(e.token.lno, "", e.message)
-        raise
+class Interpreter:
+    def interpret(self, expr: Expr) -> None:
+        try:
+            value = evaluate(expr)
+            print(_stringify(value))
+        except ExecutionError as e:
+            report(e.token.lno, "", e.message)
+            raise
 
 
 def _stringify(value: object) -> str:
