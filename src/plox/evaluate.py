@@ -2,8 +2,9 @@ from functools import singledispatch
 from operator import add, eq, ge, gt, le, lt, mul, ne, neg, sub, truediv
 from typing import overload
 
+from plox.errors import ExecutionError
 from plox.expressions import Binary, Expr, Grouping, Literal, Unary
-from plox.tokens import TokenType
+from plox.tokens import Token, TokenType
 
 _binary_op_lookup = {
     TokenType.BANG_EQUAL: ne,
@@ -22,6 +23,18 @@ _unary_op_lookup = {
     TokenType.BANG: lambda x: not _truthy(x),
     TokenType.MINUS: neg,
 }
+
+
+def _binary_op_error(op: Token) -> str:
+    if op.kind == TokenType.PLUS:
+        fix = "must both be 'string' or 'number'"
+    else:
+        fix = "must both be 'number'"
+    return f"Unsupported operands for '{op.lexeme}', {fix}."
+
+
+def _unary_op_error(op: Token) -> str:
+    return f"Unsupported operand for '{op.lexeme}', must be 'number'."
 
 
 def _truthy(x: object) -> bool:
@@ -49,10 +62,12 @@ def evaluate(expr: Binary) -> object:
     try:
         op = _binary_op_lookup[expr.operator.kind]
         return op(left, right)
-    except KeyError:
-        raise RuntimeError(
-            f"unexpected Binary operator: {expr.operator.kind}"
-        ) from None
+    except KeyError as e:
+        # This is an internal error.
+        raise RuntimeError(f"unexpected Binary operator: {expr.operator.kind}") from e
+    except TypeError as e:
+        msg = _binary_op_error(expr.operator)
+        raise ExecutionError(msg, expr.operator) from e
 
 
 @overload
@@ -75,8 +90,12 @@ def evaluate(expr: Unary) -> object:
     try:
         op = _unary_op_lookup[expr.operator.kind]
         return op(right)
-    except KeyError:
-        raise RuntimeError(f"unexpected Unary operator: {expr.operator.kind}") from None
+    except KeyError as e:
+        # This is an internal error.
+        raise RuntimeError(f"unexpected Unary operator: {expr.operator.kind}") from e
+    except TypeError as e:
+        msg = _unary_op_error(expr.operator)
+        raise ExecutionError(msg, expr.operator) from e
 
 
 def evaluate(expr: Expr) -> object:

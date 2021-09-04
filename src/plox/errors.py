@@ -16,6 +16,13 @@ class ParserError(Exception):
         self.token = token
 
 
+class ExecutionError(Exception):
+    # pylint: disable=super-init-not-called
+    def __init__(self, message: str, token: Token) -> None:
+        self.message = message
+        self.token = token
+
+
 def _report(lno: int, where: str, message: str) -> None:
     if where:
         where = f" {where.lstrip()}"
