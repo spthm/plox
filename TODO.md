@@ -24,6 +24,7 @@ Currently, this results in a hard crash with an `IndexError` from `parse()`.
 ### `evaluate`
 
 - We return `False` for equality comparison of `NaN`, but should return `True`.
+- `(x / 0)` is a valid Lox expression (returning `Nan` or `+/-Inf`); we raise a `ZeroDivisionError`.
 
 ## Challenges
 
@@ -40,7 +41,7 @@ The grammar (as of Chapter 6) becomes `unary → ( ( "!" | "-" | "+" | "*" | "/"
 
 ### `Lox`
 
-- Distinguish between `int` and `float` numeric types.
+- Distinguish between `int` and `float` numeric types; printing of floats should include a trailing `.0`.
 - Require `++` for string concatenation (I think this is a neat idea).
 - Do not return `True` for equality comparison of `NaN` values.
 
