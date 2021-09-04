@@ -1,5 +1,5 @@
 from functools import singledispatch
-from operator import add, eq, ge, gt, le, lt, mul, ne, neg, not_, sub, truediv
+from operator import add, eq, ge, gt, le, lt, mul, ne, neg, sub, truediv
 from typing import overload
 
 from plox.expressions import Binary, Expr, Grouping, Literal, Unary
@@ -19,7 +19,7 @@ _binary_op_lookup = {
 }
 
 _unary_op_lookup = {
-    TokenType.BANG: not_,
+    TokenType.BANG: lambda x: not _truthy(x),
     TokenType.MINUS: neg,
 }
 
