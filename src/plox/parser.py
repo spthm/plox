@@ -1,5 +1,3 @@
-from typing import Optional
-
 from plox.errors import ParserError, report
 from plox.expressions import Binary, Expr, Grouping, Literal, Unary
 from plox.tokens import Token, TokenType
@@ -16,7 +14,7 @@ class Parser:
         self._tokens = tokens
         self._current = 0
 
-    def parse(self) -> Optional[Expr]:
+    def parse(self) -> Expr:
         try:
             return self._expression()
         except ParserError as e:
