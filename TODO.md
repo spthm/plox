@@ -44,6 +44,7 @@ The grammar (as of Chapter 6) becomes `unary → ( ( "!" | "-" | "+" | "*" | "/"
 - Distinguish between `int` and `float` numeric types; printing of floats should include a trailing `.0`.
 - Require `++` for string concatenation (I think this is a neat idea).
 - Do not return `True` for equality comparison of `NaN` values.
+- Support exponentiation with `**`.
 
 ### `Scanner`
 
