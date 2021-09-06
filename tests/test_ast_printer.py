@@ -1,5 +1,4 @@
-from plox.ast_printer import ast_str
-from plox.expressions import Binary, Grouping, Literal, Unary
+from plox.ast import Binary, Grouping, Literal, Unary, ast_str
 from plox.tokens import Token, TokenType
 
 

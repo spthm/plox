@@ -3,8 +3,9 @@ from operator import add, eq, ge, gt, le, lt, mul, ne, neg, sub, truediv
 from typing import Protocol, overload
 
 from plox.errors import ExecutionError
-from plox.expressions import Binary, Expr, Grouping, Literal, Unary
 from plox.tokens import Token, TokenType
+
+from .expressions import Binary, Expr, Grouping, Literal, Unary
 
 
 def _binary_op_error(op: Token) -> str:

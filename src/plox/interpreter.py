@@ -1,6 +1,5 @@
+from plox.ast import Expr, evaluate
 from plox.errors import ExecutionError, report
-from plox.evaluate import evaluate
-from plox.expressions import Expr
 
 
 class Interpreter:

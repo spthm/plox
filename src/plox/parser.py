@@ -1,5 +1,5 @@
+from plox.ast import Binary, Expr, Grouping, Literal, Unary
 from plox.errors import ParserError, report
-from plox.expressions import Binary, Expr, Grouping, Literal, Unary
 from plox.tokens import Token, TokenType
 
 

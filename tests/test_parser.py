@@ -1,4 +1,4 @@
-from plox.expressions import Binary, Grouping, Literal, Unary
+from plox.ast import Binary, Grouping, Literal, Unary
 from plox.parser import Parser
 from plox.tokens import Token, TokenType
 

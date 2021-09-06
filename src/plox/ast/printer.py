@@ -1,7 +1,7 @@
 from functools import singledispatch
 from typing import overload
 
-from plox.expressions import Binary, Expr, Grouping, Literal, Unary
+from .expressions import Binary, Expr, Grouping, Literal, Unary
 
 
 def _parenthesize(name: str, *args: Expr) -> str:
