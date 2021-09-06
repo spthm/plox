@@ -1,4 +1,7 @@
+from typing import Optional
+
 from plox.ast import Binary, Expr, Expression, Grouping, Literal, Print, Stmt, Unary
+from plox.ast.statements import Var
 from plox.errors import ParserError, report
 from plox.tokens import Token, TokenType
 
@@ -11,6 +14,7 @@ def _report(e: ParserError) -> None:
 
 class Parser:
     def __init__(self, tokens: list[Token]) -> None:
+        self._error: Optional[ParserError] = None
         self._tokens = tokens
         self._current = 0
 
@@ -18,32 +22,32 @@ class Parser:
         statements = []
         while not self._at_end():
             try:
-                statements.append(self._statement())
+                statements.append(self._declaration())
             except ParserError as e:
                 _report(e)
-                raise
+                # The first parser error encountered is a sensible error to later raise.
+                if self._error is None:
+                    self._error = e
+                # Continue parsing so we can report other errors to the user.
+                self._synchronize()
+
+        if self._error is not None:
+            raise self._error
+
         return statements
 
-    def _synchronize(self) -> None:
-        self._advance()
+    def _declaration(self) -> Stmt:
+        if self._match(TokenType.VAR):
+            return self._variable_declaration()
+        return self._statement()
 
-        while not self._at_end():
-            if self._previous().kind == TokenType.SEMICOLON:
-                return
+    def _variable_declaration(self) -> Stmt:
+        name = self._consume(TokenType.IDENTIFIER, "Expect a variable name.")
+        initializer = self._expression() if self._match(TokenType.EQUAL) else None
 
-            if self._peek().kind in {
-                TokenType.CLASS,
-                TokenType.FUN,
-                TokenType.VAR,
-                TokenType.FOR,
-                TokenType.IF,
-                TokenType.WHILE,
-                TokenType.PRINT,
-                TokenType.RETURN,
-            }:
-                return
+        self._consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.")
 
-            self._advance()
+        return Var(name, initializer)
 
     def _statement(self) -> Stmt:
         if self._match(TokenType.PRINT):
@@ -127,6 +131,9 @@ class Parser:
         if self._match(TokenType.NUMBER, TokenType.STRING):
             return Literal(self._previous().literal)
 
+        if self._match(TokenType.IDENTIFIER):
+            return Expression(self._previous())
+
         if self._match(TokenType.LEFT_PAREN):
             expr = self._expression()
             self._consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.")
@@ -165,3 +172,24 @@ class Parser:
     def _previous(self) -> Token:
         assert self._current > 0
         return self._tokens[self._current - 1]
+
+    def _synchronize(self) -> None:
+        self._advance()
+
+        while not self._at_end():
+            if self._previous().kind == TokenType.SEMICOLON:
+                return
+
+            if self._peek().kind in {
+                TokenType.CLASS,
+                TokenType.FUN,
+                TokenType.VAR,
+                TokenType.FOR,
+                TokenType.IF,
+                TokenType.WHILE,
+                TokenType.PRINT,
+                TokenType.RETURN,
+            }:
+                return
+
+            self._advance()

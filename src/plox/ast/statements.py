@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Union
 
+from plox.tokens import Token
+
 from .expressions import Expr
 
 
@@ -16,4 +18,10 @@ class Print:
     expression: Expr
 
 
-Stmt = Union[Expression, Print]
+@dataclass(frozen=True)
+class Var:
+    name: Token
+    initializer: Expr
+
+
+Stmt = Union[Expression, Print, Var]

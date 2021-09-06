@@ -29,4 +29,9 @@ class Unary:
     right: Expr
 
 
-Expr = Union[Binary, Grouping, Literal, Unary]
+@dataclass(frozen=True)
+class Variable:
+    name: Token
+
+
+Expr = Union[Binary, Grouping, Literal, Unary, Variable]

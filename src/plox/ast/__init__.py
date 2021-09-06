@@ -1,8 +1,8 @@
 from .evaluation import evaluate
 from .execution import execute
-from .expressions import Binary, Expr, Grouping, Literal, Unary
+from .expressions import Binary, Expr, Grouping, Literal, Unary, Variable
 from .printer import ast_str
-from .statements import Expression, Print, Stmt
+from .statements import Expression, Print, Stmt, Var
 
 __all__ = [
     # .evaluation
@@ -13,6 +13,7 @@ __all__ = [
     "Grouping",
     "Literal",
     "Unary",
+    "Variable",
     # .execution
     "execute",
     # .printer
@@ -21,4 +22,5 @@ __all__ = [
     "Expression",
     "Print",
     "Stmt",
+    "Var",
 ]
