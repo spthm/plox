@@ -13,8 +13,8 @@ class Lox:
 
     def run(self, source: str) -> None:
         tokens = Scanner(source).scan_tokens()
-        expr = Parser(tokens).parse()
-        self._interpreter.interpret(expr)
+        statements = Parser(tokens).parse()
+        self._interpreter.interpret(statements)
 
     def run_file(self, path: Path) -> None:
         source = path.read_text()

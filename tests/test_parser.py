@@ -14,6 +14,7 @@ def test_parse_grouping():
     five = Token(TokenType.NUMBER, "5", 5, 1)
     lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
     rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
     end = Token(TokenType.EOF, "", None, 1)
 
     # (5 - (3 - 1)) + -1
@@ -30,11 +31,13 @@ def test_parse_grouping():
         plus,
         minus,
         one,
+        semicolon,
         end,
     ]
-    expr = Parser(tokens).parse()
+    statements = Parser(tokens).parse()
 
-    assert expr == \
+    assert len(statements) == 1
+    assert statements[0].expression == \
         Binary(
             Grouping(
                 Binary(
@@ -64,11 +67,15 @@ def test_parse_precedence_plus_star():
         Token(TokenType.NUMBER, "3", 3, 1),
         star,
         Token(TokenType.NUMBER, "4", 4, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1),
         Token(TokenType.EOF, "", None, 1),
     ]
-    expr = Parser(tokens).parse()
+    statements = Parser(tokens).parse()
+    assert len(statements) == 1
 
-    assert expr == Binary(Literal(2.0), plus, Binary(Literal(3.0), star, Literal(4.0)))
+    assert statements[0].expression == Binary(
+        Literal(2.0), plus, Binary(Literal(3.0), star, Literal(4.0))
+    )
 
 
 def test_parse_precedence_minus_star():
@@ -82,11 +89,15 @@ def test_parse_precedence_minus_star():
         Token(TokenType.NUMBER, "3", 3, 1),
         star,
         Token(TokenType.NUMBER, "4", 4, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1),
         Token(TokenType.EOF, "", None, 1),
     ]
-    expr = Parser(tokens).parse()
+    statements = Parser(tokens).parse()
 
-    assert expr == Binary(Literal(2.0), minus, Binary(Literal(3.0), star, Literal(4.0)))
+    assert len(statements) == 1
+    assert statements[0].expression == Binary(
+        Literal(2.0), minus, Binary(Literal(3.0), star, Literal(4.0))
+    )
 
 
 def test_parse_precedence_plus_slash():
@@ -100,11 +111,15 @@ def test_parse_precedence_plus_slash():
         Token(TokenType.NUMBER, "3", 3, 1),
         slash,
         Token(TokenType.NUMBER, "4", 4, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1),
         Token(TokenType.EOF, "", None, 1),
     ]
-    expr = Parser(tokens).parse()
+    statements = Parser(tokens).parse()
 
-    assert expr == Binary(Literal(2.0), plus, Binary(Literal(3.0), slash, Literal(4.0)))
+    assert len(statements) == 1
+    assert statements[0].expression == Binary(
+        Literal(2.0), plus, Binary(Literal(3.0), slash, Literal(4.0))
+    )
 
 
 def test_parse_precedence_minus_slash():
@@ -118,11 +133,13 @@ def test_parse_precedence_minus_slash():
         Token(TokenType.NUMBER, "3", 3, 1),
         slash,
         Token(TokenType.NUMBER, "4", 4, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1),
         Token(TokenType.EOF, "", None, 1),
     ]
-    expr = Parser(tokens).parse()
+    statements = Parser(tokens).parse()
 
-    assert expr == Binary(
+    assert len(statements) == 1
+    assert statements[0].expression == Binary(
         Literal(2.0), minus, Binary(Literal(3.0), slash, Literal(4.0))
     )
 
@@ -138,11 +155,15 @@ def test_parse_precedence_equalequal_lt():
         Token(TokenType.NUMBER, "2", 2, 1),
         lt,
         Token(TokenType.NUMBER, "1", 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1),
         Token(TokenType.EOF, "", None, 1),
     ]
-    expr = Parser(tokens).parse()
+    statements = Parser(tokens).parse()
 
-    assert expr == Binary(Literal(False), equal, Binary(Literal(2.0), lt, Literal(1.0)))
+    assert len(statements) == 1
+    assert statements[0].expression == Binary(
+        Literal(False), equal, Binary(Literal(2.0), lt, Literal(1.0))
+    )
 
 
 def test_parse_precedence_equalequal_lte():
@@ -156,11 +177,13 @@ def test_parse_precedence_equalequal_lte():
         Token(TokenType.NUMBER, "2", 2, 1),
         lte,
         Token(TokenType.NUMBER, "1", 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1),
         Token(TokenType.EOF, "", None, 1),
     ]
-    expr = Parser(tokens).parse()
+    statements = Parser(tokens).parse()
 
-    assert expr == Binary(
+    assert len(statements) == 1
+    assert statements[0].expression == Binary(
         Literal(False), equal, Binary(Literal(2.0), lte, Literal(1.0))
     )
 
@@ -176,11 +199,15 @@ def test_parse_precedence_equalequal_gt():
         Token(TokenType.NUMBER, "2", 2, 1),
         gt,
         Token(TokenType.NUMBER, "1", 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1),
         Token(TokenType.EOF, "", None, 1),
     ]
-    expr = Parser(tokens).parse()
+    statements = Parser(tokens).parse()
 
-    assert expr == Binary(Literal(False), equal, Binary(Literal(2.0), gt, Literal(1.0)))
+    assert len(statements) == 1
+    assert statements[0].expression == Binary(
+        Literal(False), equal, Binary(Literal(2.0), gt, Literal(1.0))
+    )
 
 
 def test_parse_precedence_equalequal_gte():
@@ -194,10 +221,12 @@ def test_parse_precedence_equalequal_gte():
         Token(TokenType.NUMBER, "2", 2, 1),
         gte,
         Token(TokenType.NUMBER, "1", 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1),
         Token(TokenType.EOF, "", None, 1),
     ]
-    expr = Parser(tokens).parse()
+    statements = Parser(tokens).parse()
 
-    assert expr == Binary(
+    assert len(statements) == 1
+    assert statements[0].expression == Binary(
         Literal(False), equal, Binary(Literal(2.0), gte, Literal(1.0))
     )
