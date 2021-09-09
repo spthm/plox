@@ -1,8 +1,10 @@
 from functools import singledispatch
 from typing import overload
 
+from plox.environment import Environment
+
 from .evaluation import evaluate
-from .statements import Expression, Print, Stmt
+from .statements import Expression, Print, Stmt, Var
 
 
 def _stringify(value: object) -> str:
@@ -22,24 +24,32 @@ def _stringify(value: object) -> str:
 
 
 @singledispatch
-def _execute(stmt: Stmt) -> None:
+def _execute(stmt: Stmt, _: Environment) -> None:
     raise TypeError(f"execute does not support {type(stmt)}")
 
 
 @overload
 @_execute.register(Expression)
-def execute(stmt: Expression) -> None:
-    evaluate(stmt.expression)
+def execute(stmt: Expression, env: Environment) -> None:
+    evaluate(stmt.expression, env)
     return None
 
 
 @overload
 @_execute.register(Print)
-def execute(stmt: Print) -> None:
-    value = evaluate(stmt.expression)
+def execute(stmt: Print, env: Environment) -> None:
+    value = evaluate(stmt.expression, env)
     print(_stringify(value))
     return None
 
 
-def execute(stmt: Stmt) -> None:
-    return _execute(stmt)
+@overload
+@_execute.register(Var)
+def execute(stmt: Var, env: Environment) -> None:
+    value = evaluate(stmt.initializer, env)
+    env[stmt.name] = value
+    return None
+
+
+def execute(stmt: Stmt, env: Environment) -> None:
+    return _execute(stmt, env)

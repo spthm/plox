@@ -2,10 +2,11 @@ from functools import singledispatch
 from operator import add, eq, ge, gt, le, lt, mul, ne, neg, sub, truediv
 from typing import Protocol, overload
 
+from plox.environment import Environment
 from plox.errors import ExecutionError
 from plox.tokens import Token, TokenType
 
-from .expressions import Binary, Expr, Grouping, Literal, Unary
+from .expressions import Binary, Expr, Grouping, Literal, Unary, Variable
 
 
 def _binary_op_error(op: Token) -> str:
@@ -82,17 +83,17 @@ _unary_op_check = {
 
 
 @singledispatch
-def _evaluate(expr: Expr) -> object:
+def _evaluate(expr: Expr, _: Environment) -> object:
     raise TypeError(f"evaluate does not support {type(expr)}")
 
 
 @overload
 @_evaluate.register(Binary)
-def evaluate(expr: Binary) -> object:
+def evaluate(expr: Binary, env: Environment) -> object:
     # We evaluate operands in left-to-right order, and evaluate both before type
     # checking either.
-    left = evaluate(expr.left)
-    right = evaluate(expr.right)
+    left = evaluate(expr.left, env)
+    right = evaluate(expr.right, env)
 
     check = _binary_op_check.get(expr.operator.kind, None)
     if check is not None and not check(left, right):
@@ -110,20 +111,20 @@ def evaluate(expr: Binary) -> object:
 
 @overload
 @_evaluate.register(Grouping)
-def evaluate(expr: Grouping) -> object:
-    return evaluate(expr.expression)
+def evaluate(expr: Grouping, env: Environment) -> object:
+    return evaluate(expr.expression, env)
 
 
 @overload
 @_evaluate.register(Literal)
-def evaluate(expr: Literal) -> object:
+def evaluate(expr: Literal, env: Environment) -> object:
     return expr.value
 
 
 @overload
 @_evaluate.register(Unary)
-def evaluate(expr: Unary) -> object:
-    right = evaluate(expr.right)
+def evaluate(expr: Unary, env: Environment) -> object:
+    right = evaluate(expr.right, env)
 
     check = _unary_op_check.get(expr.operator.kind, None)
     if check is not None and not check(right):
@@ -139,5 +140,11 @@ def evaluate(expr: Unary) -> object:
     return op(right)
 
 
-def evaluate(expr: Expr) -> object:
-    return _evaluate(expr)
+@overload
+@_evaluate.register(Variable)
+def evaluate(expr: Variable, env: Environment) -> object:
+    return env[expr.name]
+
+
+def evaluate(expr: Expr, env: Environment) -> object:
+    return _evaluate(expr, env)
