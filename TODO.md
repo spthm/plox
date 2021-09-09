@@ -17,9 +17,9 @@ Instances of `Scanner` are never re-used - all invocations will be `Scanner(sour
 - Internally `raise ParserError` if the provided list of tokens does not end with a `TokenType.EOF` token.
 Currently, this results in a hard crash with an `IndexError` from `parse()`.
 
-### `ast_str`
+### `ast.ast_str`
 
-- `ast_str` should be the `__str__` method of an `AST` class.
+- Remoe this, or instead add a `__str__` method for each statement and expression class.
 
 ### `evaluate`
 
