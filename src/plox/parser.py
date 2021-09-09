@@ -1,6 +1,7 @@
 from typing import Optional
 
 from plox.ast import Binary, Expr, Expression, Grouping, Literal, Print, Stmt, Unary
+from plox.ast.expressions import Variable
 from plox.ast.statements import Var
 from plox.errors import ParserError, report
 from plox.tokens import Token, TokenType
@@ -134,7 +135,7 @@ class Parser:
             return Literal(self._previous().literal)
 
         if self._match(TokenType.IDENTIFIER):
-            return Expression(self._previous())
+            return Variable(self._previous())
 
         if self._match(TokenType.LEFT_PAREN):
             expr = self._expression()
