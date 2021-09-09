@@ -43,7 +43,9 @@ class Parser:
 
     def _variable_declaration(self) -> Stmt:
         name = self._consume(TokenType.IDENTIFIER, "Expect a variable name.")
-        initializer = self._expression() if self._match(TokenType.EQUAL) else None
+        initializer = (
+            self._expression() if self._match(TokenType.EQUAL) else Literal(None)
+        )
 
         self._consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.")
 
