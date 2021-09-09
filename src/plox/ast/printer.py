@@ -1,7 +1,7 @@
 from functools import singledispatch
 from typing import overload
 
-from .expressions import Binary, Expr, Grouping, Literal, Unary
+from .expressions import Binary, Expr, Grouping, Literal, Unary, Variable
 
 
 def _parenthesize(name: str, *args: Expr) -> str:
@@ -42,6 +42,12 @@ def ast_str(expr: Literal) -> str:
 @_ast_str.register(Unary)
 def ast_str(expr: Unary) -> str:
     return _parenthesize(expr.operator.lexeme, expr.right)
+
+
+@overload
+@_ast_str.register(Variable)
+def ast_str(expr: Variable) -> str:
+    return str(expr.name.lexeme)
 
 
 def ast_str(expr: Expr) -> str:
