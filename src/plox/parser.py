@@ -15,7 +15,7 @@ def _report(e: ParserError) -> None:
 
 class Parser:
     def __init__(self, tokens: list[Token]) -> None:
-        self._error: Optional[ParserError] = None
+        self._exc: Optional[ParserError] = None
         self._tokens = tokens
         self._current = 0
 
@@ -24,16 +24,12 @@ class Parser:
         while not self._at_end():
             try:
                 statements.append(self._declaration())
-            except ParserError as e:
-                _report(e)
-                # The first parser error encountered is a sensible error to later raise.
-                if self._error is None:
-                    self._error = e
+            except ParserError:
                 # Continue parsing so we can report other errors to the user.
                 self._synchronize()
 
-        if self._error is not None:
-            raise self._error
+        if self._exc is not None:
+            raise self._exc
 
         return statements
 
@@ -142,7 +138,7 @@ class Parser:
             self._consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.")
             return Grouping(expr)
 
-        raise ParserError("Expected expression.", self._peek())
+        raise self._error("Expected expression.", self._peek())
 
     def _advance(self) -> Token:
         if not self._at_end():
@@ -161,7 +157,15 @@ class Parser:
         if self._check(kind):
             return self._advance()
 
-        raise ParserError(message, self._peek())
+        raise self._error(message, self._peek())
+
+    def _error(self, message: str, token: Token) -> ParserError:
+        e = ParserError(message, token)
+        _report(e)
+        # The first parser error encountered is a sensible error to later raise.
+        if self._exc is None:
+            self._exc = e
+        return e
 
     def _match(self, *args: TokenType) -> bool:
         if any(self._check(kind) for kind in args):
