@@ -47,7 +47,7 @@ def execute(stmt: Print, env: Environment) -> None:
 @_execute.register(Var)
 def execute(stmt: Var, env: Environment) -> None:
     value = evaluate(stmt.initializer, env)
-    env[stmt.name] = value
+    env.define(stmt.name, value)
     return None
 
 

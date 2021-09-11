@@ -6,7 +6,7 @@ from plox.environment import Environment
 from plox.errors import ExecutionError
 from plox.tokens import Token, TokenType
 
-from .expressions import Binary, Expr, Grouping, Literal, Unary, Variable
+from .expressions import Assign, Binary, Expr, Grouping, Literal, Unary, Variable
 
 
 def _binary_op_error(op: Token) -> str:
@@ -85,6 +85,14 @@ _unary_op_check = {
 @singledispatch
 def _evaluate(expr: Expr, _: Environment) -> object:
     raise TypeError(f"evaluate does not support {type(expr)}")
+
+
+@overload
+@_evaluate.register(Assign)
+def evaluate(expr: Assign, env: Environment) -> object:
+    value = evaluate(expr.value, env)
+    env[expr.name] = value
+    return value
 
 
 @overload

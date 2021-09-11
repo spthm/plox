@@ -1,6 +1,16 @@
 from typing import Optional
 
-from plox.ast import Binary, Expr, Expression, Grouping, Literal, Print, Stmt, Unary
+from plox.ast import (
+    Assign,
+    Binary,
+    Expr,
+    Expression,
+    Grouping,
+    Literal,
+    Print,
+    Stmt,
+    Unary,
+)
 from plox.ast.expressions import Variable
 from plox.ast.statements import Var
 from plox.errors import ParserError, report
@@ -64,7 +74,23 @@ class Parser:
         return Expression(expr)
 
     def _expression(self) -> Expr:
-        return self._equality()
+        return self._assignment()
+
+    def _assignment(self) -> Expr:
+        expr = self._equality()
+
+        if self._match(TokenType.EQUAL):
+            equals = self._previous()
+            value = self._assignment()
+
+            if isinstance(expr, Variable):
+                return Assign(expr.name, value)
+
+            # The parser is not in a confused state, so we do not need to raise and
+            # trigger a _synchronize().
+            self._error("Invalid assignment target.", equals)
+
+        return expr
 
     def _equality(self) -> Expr:
         expr = self._comparison()

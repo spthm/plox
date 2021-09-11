@@ -7,6 +7,12 @@ from plox.tokens import Token
 
 
 @dataclass(frozen=True)
+class Assign:
+    name: Token
+    value: Expr
+
+
+@dataclass(frozen=True)
 class Binary:
     left: Expr
     operator: Token
@@ -34,4 +40,4 @@ class Variable:
     name: Token
 
 
-Expr = Union[Binary, Grouping, Literal, Unary, Variable]
+Expr = Union[Assign, Binary, Grouping, Literal, Unary, Variable]
