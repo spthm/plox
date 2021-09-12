@@ -1,7 +1,7 @@
 from functools import singledispatch
 from typing import overload
 
-from .expressions import Binary, Expr, Grouping, Literal, Unary, Variable
+from .expressions import Assign, Binary, Expr, Grouping, Literal, Unary, Variable
 
 
 def _parenthesize(name: str, *args: Expr) -> str:
@@ -16,6 +16,12 @@ def _parenthesize(name: str, *args: Expr) -> str:
 @singledispatch
 def _ast_str(expr: Expr) -> str:
     raise TypeError(f"ast_str does not support {type(expr)}")
+
+
+@overload
+@_ast_str.register(Assign)
+def ast_str(expr: Assign) -> str:
+    return f"({expr.name.lexeme} <- ({ast_str(expr.value)})"
 
 
 @overload
