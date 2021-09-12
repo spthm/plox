@@ -1,5 +1,5 @@
 from functools import singledispatch
-from typing import overload
+from typing import Any, overload
 
 from plox.environment import Environment
 
@@ -24,7 +24,7 @@ def _stringify(value: object) -> str:
 
 
 @singledispatch
-def _execute(stmt: Stmt, _: Environment) -> None:
+def _execute(stmt: Any, _: Environment) -> None:
     raise TypeError(f"execute does not support {type(stmt)}")
 
 

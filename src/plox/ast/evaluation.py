@@ -1,6 +1,6 @@
 from functools import singledispatch
 from operator import add, eq, ge, gt, le, lt, mul, ne, neg, sub, truediv
-from typing import Protocol, overload
+from typing import Any, Protocol, overload
 
 from plox.environment import Environment
 from plox.errors import ExecutionError
@@ -83,7 +83,7 @@ _unary_op_check = {
 
 
 @singledispatch
-def _evaluate(expr: Expr, _: Environment) -> object:
+def _evaluate(expr: Any, _: Environment) -> object:
     raise TypeError(f"evaluate does not support {type(expr)}")
 
 
