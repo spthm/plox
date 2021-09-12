@@ -3,6 +3,7 @@ from typing import Optional
 from plox.ast import (
     Assign,
     Binary,
+    Block,
     Expr,
     Expression,
     Grouping,
@@ -61,14 +62,25 @@ class Parser:
     def _statement(self) -> Stmt:
         if self._match(TokenType.PRINT):
             return self._print_statement()
+        if self._match(TokenType.LEFT_BRACE):
+            return self._block_statement()
         return self._expression_statement()
 
-    def _print_statement(self) -> Stmt:
+    def _print_statement(self) -> Print:
         value = self._expression()
         self._consume(TokenType.SEMICOLON, "Expect ';' after value.")
         return Print(value)
 
-    def _expression_statement(self) -> Stmt:
+    def _block_statement(self) -> Block:
+        statements = []
+
+        while not self._check(TokenType.RIGHT_BRACE) and not self._at_end():
+            statements.append(self._declaration())
+
+        self._consume(TokenType.RIGHT_BRACE, "Expect '}' after block.")
+        return Block(statements)
+
+    def _expression_statement(self) -> Expression:
         expr = self._expression()
         self._consume(TokenType.SEMICOLON, "Expect ';' after expression.")
         return Expression(expr)

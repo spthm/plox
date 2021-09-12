@@ -9,6 +9,11 @@ from .expressions import Expr
 
 
 @dataclass(frozen=True)
+class Block:
+    statements: list[Stmt]
+
+
+@dataclass(frozen=True)
 class Expression:
     expression: Expr
 
@@ -24,4 +29,4 @@ class Var:
     initializer: Expr
 
 
-Stmt = Union[Expression, Print, Var]
+Stmt = Union[Block, Expression, Print, Var]

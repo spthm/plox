@@ -4,7 +4,7 @@ from typing import overload
 from plox.environment import Environment
 
 from .evaluation import evaluate
-from .statements import Expression, Print, Stmt, Var
+from .statements import Block, Expression, Print, Stmt, Var
 
 
 def _stringify(value: object) -> str:
@@ -26,6 +26,14 @@ def _stringify(value: object) -> str:
 @singledispatch
 def _execute(stmt: Stmt, _: Environment) -> None:
     raise TypeError(f"execute does not support {type(stmt)}")
+
+
+@overload
+@_execute.register(Block)
+def execute(stmt: Block, env: Environment) -> None:
+    env = Environment(enclosing=env)
+    for s in stmt.statements:
+        execute(s, env)
 
 
 @overload

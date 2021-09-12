@@ -2,7 +2,7 @@ from .evaluation import evaluate
 from .execution import execute
 from .expressions import Assign, Binary, Expr, Grouping, Literal, Unary, Variable
 from .printer import ast_str
-from .statements import Expression, Print, Stmt, Var
+from .statements import Block, Expression, Print, Stmt, Var
 
 __all__ = [
     # .evaluation
@@ -20,6 +20,7 @@ __all__ = [
     # .printer
     "ast_str",
     # .statements
+    "Block",
     "Expression",
     "Print",
     "Stmt",

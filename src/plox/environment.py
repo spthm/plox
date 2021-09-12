@@ -1,9 +1,14 @@
+from __future__ import annotations
+
+from typing import Optional
+
 from plox.errors import ExecutionError
 from plox.tokens import Token
 
 
 class Environment:
-    def __init__(self) -> None:
+    def __init__(self, enclosing: Optional[Environment] = None) -> None:
+        self._enclosing: Optional[Environment] = enclosing
         self._values: dict[str, object] = {}
 
     def define(self, name: Token, value: object) -> None:
@@ -13,9 +18,20 @@ class Environment:
         try:
             return self._values[name.lexeme]
         except KeyError:
-            raise ExecutionError(f"Undefined variable '{name.lexeme}'.", name) from None
+            pass
+
+        if self._enclosing is not None:
+            return self._enclosing[name]
+
+        raise ExecutionError(f"Undefined variable '{name.lexeme}'.", name)
 
     def __setitem__(self, name: Token, value: object) -> None:
-        if name.lexeme not in self._values:
-            raise ExecutionError(f"Undefined variable '{name.lexeme}'.", name)
-        self._values[name.lexeme] = value
+        if name.lexeme in self._values:
+            self._values[name.lexeme] = value
+            return
+
+        if self._enclosing is not None:
+            self._enclosing[name] = value
+            return
+
+        raise ExecutionError(f"Undefined variable '{name.lexeme}'.", name)
