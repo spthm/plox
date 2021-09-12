@@ -40,7 +40,6 @@ def execute(stmt: Block, env: Environment) -> None:
 @_execute.register(Expression)
 def execute(stmt: Expression, env: Environment) -> None:
     evaluate(stmt.expression, env)
-    return None
 
 
 @overload
@@ -48,7 +47,6 @@ def execute(stmt: Expression, env: Environment) -> None:
 def execute(stmt: Print, env: Environment) -> None:
     value = evaluate(stmt.expression, env)
     print(_stringify(value))
-    return None
 
 
 @overload
@@ -56,7 +54,6 @@ def execute(stmt: Print, env: Environment) -> None:
 def execute(stmt: Var, env: Environment) -> None:
     value = evaluate(stmt.initializer, env)
     env.define(stmt.name, value)
-    return None
 
 
 def execute(stmt: Stmt, env: Environment) -> None:
