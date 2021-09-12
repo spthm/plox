@@ -1,4 +1,5 @@
 from plox.ast import Binary, Grouping, Literal, Unary, evaluate
+from plox.environment import Environment
 from plox.tokens import Token, TokenType
 
 
@@ -23,5 +24,5 @@ def test_evaluate():
             Unary(minus, Literal(1.0)),
         )
 
-    assert evaluate(expr) == 2
+    assert evaluate(expr, Environment()) == 2
 # fmt: on
