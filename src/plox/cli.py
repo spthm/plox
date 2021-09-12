@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 
 from plox.lox import Lox
 
@@ -15,3 +16,5 @@ def main() -> None:
     if args.script is None:
         lox.run_prompt()
         return
+
+    lox.run_file(Path(args.script))
