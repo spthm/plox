@@ -176,7 +176,7 @@ class Parser:
             self._consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.")
             return Grouping(expr)
 
-        raise self._error("Expected expression.", self._peek())
+        raise self._error("Expect expression.", self._peek())
 
     def _advance(self) -> Token:
         if not self._at_end():
