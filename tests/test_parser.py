@@ -41,7 +41,7 @@ def test_parse_grouping():
     statements = Parser(tokens).parse()
 
     assert len(statements) == 1
-    assert statements[0].expression == \
+    assert statements[0] == Expression(
         Binary(
             Grouping(
                 Binary(
@@ -53,6 +53,7 @@ def test_parse_grouping():
             plus,
             Unary(minus, Literal(1.0))
         )
+    )
 # fmt: on
 
 
@@ -75,10 +76,10 @@ def test_parse_precedence_plus_star():
         Token(TokenType.EOF, "", None, 1),
     ]
     statements = Parser(tokens).parse()
-    assert len(statements) == 1
 
-    assert statements[0].expression == Binary(
-        Literal(2.0), plus, Binary(Literal(3.0), star, Literal(4.0))
+    assert len(statements) == 1
+    assert statements[0] == Expression(
+        Binary(Literal(2.0), plus, Binary(Literal(3.0), star, Literal(4.0)))
     )
 
 
@@ -99,8 +100,8 @@ def test_parse_precedence_minus_star():
     statements = Parser(tokens).parse()
 
     assert len(statements) == 1
-    assert statements[0].expression == Binary(
-        Literal(2.0), minus, Binary(Literal(3.0), star, Literal(4.0))
+    assert statements[0] == Expression(
+        Binary(Literal(2.0), minus, Binary(Literal(3.0), star, Literal(4.0)))
     )
 
 
@@ -121,8 +122,8 @@ def test_parse_precedence_plus_slash():
     statements = Parser(tokens).parse()
 
     assert len(statements) == 1
-    assert statements[0].expression == Binary(
-        Literal(2.0), plus, Binary(Literal(3.0), slash, Literal(4.0))
+    assert statements[0] == Expression(
+        Binary(Literal(2.0), plus, Binary(Literal(3.0), slash, Literal(4.0)))
     )
 
 
@@ -143,8 +144,8 @@ def test_parse_precedence_minus_slash():
     statements = Parser(tokens).parse()
 
     assert len(statements) == 1
-    assert statements[0].expression == Binary(
-        Literal(2.0), minus, Binary(Literal(3.0), slash, Literal(4.0))
+    assert statements[0] == Expression(
+        Binary(Literal(2.0), minus, Binary(Literal(3.0), slash, Literal(4.0)))
     )
 
 
@@ -165,8 +166,8 @@ def test_parse_precedence_equalequal_lt():
     statements = Parser(tokens).parse()
 
     assert len(statements) == 1
-    assert statements[0].expression == Binary(
-        Literal(False), equal, Binary(Literal(2.0), lt, Literal(1.0))
+    assert statements[0] == Expression(
+        Binary(Literal(False), equal, Binary(Literal(2.0), lt, Literal(1.0)))
     )
 
 
@@ -187,8 +188,8 @@ def test_parse_precedence_equalequal_lte():
     statements = Parser(tokens).parse()
 
     assert len(statements) == 1
-    assert statements[0].expression == Binary(
-        Literal(False), equal, Binary(Literal(2.0), lte, Literal(1.0))
+    assert statements[0] == Expression(
+        Binary(Literal(False), equal, Binary(Literal(2.0), lte, Literal(1.0)))
     )
 
 
@@ -209,8 +210,8 @@ def test_parse_precedence_equalequal_gt():
     statements = Parser(tokens).parse()
 
     assert len(statements) == 1
-    assert statements[0].expression == Binary(
-        Literal(False), equal, Binary(Literal(2.0), gt, Literal(1.0))
+    assert statements[0] == Expression(
+        Binary(Literal(False), equal, Binary(Literal(2.0), gt, Literal(1.0)))
     )
 
 
@@ -231,8 +232,8 @@ def test_parse_precedence_equalequal_gte():
     statements = Parser(tokens).parse()
 
     assert len(statements) == 1
-    assert statements[0].expression == Binary(
-        Literal(False), equal, Binary(Literal(2.0), gte, Literal(1.0))
+    assert statements[0] == Expression(
+        Binary(Literal(False), equal, Binary(Literal(2.0), gte, Literal(1.0)))
     )
 
 
@@ -272,10 +273,9 @@ def test_associativity():
         semicolon,
         end,
     ]
-
     statements = Parser(tokens).parse()
-    assert len(statements) == 1
 
+    assert len(statements) == 1
     assert statements[0] == Expression(Assign(a, Assign(b, Variable(c))))
 
 
@@ -335,10 +335,9 @@ def test_block():
         rbrace,
         end,
     ]
-
     statements = Parser(tokens).parse()
-    assert len(statements) == 2
 
+    assert len(statements) == 2
     assert statements[0] == Expression(Assign(a, Literal("outer")))
     assert statements[1] == Block([Var(a, Literal("inner"))])
 
