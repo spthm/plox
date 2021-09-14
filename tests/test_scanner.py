@@ -3,11 +3,9 @@ from textwrap import dedent
 from plox.scanner import Scanner
 from plox.tokens import Token, TokenType
 
-# Test cases from
-#  https://github.com/munificent/craftinginterpreters/tree/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/scanning
-
 
 def test_identifiers():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/scanning/identifiers.lox
     src = """
     andy formless fo _ _123 _abc ab123
     abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_
@@ -33,6 +31,7 @@ def test_identifiers():
 
 
 def test_keywords():
+    # https://github.com/munificent/craftinginterpreters/tree/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/scanning/keywords.lox
     src = "and class else false for fun if nil or return super this true var while"
     t = Scanner(dedent(src)).scan_tokens()
 
@@ -57,6 +56,7 @@ def test_keywords():
 
 
 def test_numbers():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/scanning/numbers.lox
     src = """
     123
     123.456
@@ -77,6 +77,7 @@ def test_numbers():
 
 
 def test_punctuators():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/scanning/punctuators.lox
     src = "(){};,+-*!===<=>=!=<>/."
     t = Scanner(dedent(src)).scan_tokens()
 
@@ -104,6 +105,7 @@ def test_punctuators():
 
 
 def test_strings():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/scanning/strings.lox
     src = """
     ""
     "string"
@@ -119,6 +121,7 @@ def test_strings():
 
 
 def test_whitespace():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/scanning/whitespace.lox
     src = """
     space    tabs				newlines
 
@@ -136,3 +139,51 @@ def test_whitespace():
         Token(TokenType.IDENTIFIER, "end", None, 7),
         Token(TokenType.EOF, "", None, 8),
     ]
+
+
+def test_comments_ignored():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/comments/line_at_eof.lox
+    src = """
+    print "ok";
+    // comment
+    """
+    t = Scanner(dedent(src)).scan_tokens()
+
+    assert t == [
+        Token(TokenType.PRINT, "print", None, 2),
+        Token(TokenType.STRING, '"ok"', "ok", 2),
+        Token(TokenType.SEMICOLON, ";", None, 2),
+        Token(TokenType.EOF, "", None, 4),
+    ]
+
+
+def test_only_comment():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/comments/only_line_comment.lox
+    src = "// comment"
+    t = Scanner(dedent(src)).scan_tokens()
+
+    assert t == [Token(TokenType.EOF, "", None, 1)]
+
+
+def test_only_comment_and_newline():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/comments/only_line_comment_and_line.lox
+    src = "// comment\n"
+    t = Scanner(dedent(src)).scan_tokens()
+
+    assert t == [Token(TokenType.EOF, "", None, 2)]
+
+
+def test_unicode_in_comments():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/comments/unicode.lox
+    src = """
+    // Unicode characters are allowed in comments.
+    //
+    // Latin 1 Supplement: £§¶ÜÞ
+    // Latin Extended-A: ĐĦŋœ
+    // Latin Extended-B: ƂƢƩǁ
+    // Other stuff: ឃᢆ᯽₪ℜ↩⊗┺░
+    // Emoji: ☃☺♣
+    """
+    t = Scanner(dedent(src)).scan_tokens()
+
+    assert t == [Token(TokenType.EOF, "", None, 9)]
