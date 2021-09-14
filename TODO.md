@@ -23,8 +23,7 @@ Currently, this results in a hard crash with an `IndexError` from `parse()`.
 
 ### `evaluate`
 
-- We return `False` for equality comparison of `NaN`, but should return `True`.
-- `(x / 0)` is a valid Lox expression (returning `Nan` or `+/-Inf`); we raise a `ZeroDivisionError`.
+- We return `False` for equality comparison of `NaN`, but should return `True` to match `jlox`.
 
 ## Challenges
 

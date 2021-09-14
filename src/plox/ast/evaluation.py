@@ -1,4 +1,5 @@
 from functools import singledispatch
+from math import copysign
 from operator import add, eq, ge, gt, le, lt, mul, ne, neg, sub, truediv
 from typing import Any, Protocol, overload
 
@@ -114,7 +115,17 @@ def evaluate(expr: Binary, env: Environment) -> object:
         # This is an internal error.
         raise RuntimeError(f"unexpected Binary operator: {expr.operator.kind}") from e
 
-    return op(left, right)
+    try:
+        return op(left, right)
+    except ZeroDivisionError:
+        if not (isinstance(left, float) and isinstance(right, float)):
+            raise
+
+        if left == 0:
+            return float("nan")
+
+        # Account for right being signed zero.
+        return copysign(float("inf"), left * right)
 
 
 @overload
