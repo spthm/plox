@@ -1,3 +1,10 @@
+[MASTER]
+
+# A comma-separated list of package or module names from where C extensions may
+# be loaded. Extensions are loading into the active Python interpreter and may
+# run arbitrary code.
+extension-pkg-allow-list=math
+
 [MESSAGES CONTROL]
 
 # Disable the message, report, category or checker with the given id(s). You
@@ -9,7 +16,8 @@
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=missing-class-docstring,
+disable=disallowed-name,
+        missing-class-docstring,
         missing-function-docstring,
         missing-method-docstring,
         missing-module-docstring,
@@ -60,7 +68,7 @@ min-similarity-lines=5
 [BASIC]
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=c,e,i,j,k,m,n,s,t,x,gt,lt,op
+good-names=a,b,c,e,i,j,k,m,n,s,t,v,x,gt,lt,op
 
 
 [DESIGN]
