@@ -36,6 +36,10 @@
 3. Add error productions for binary operators without a left-hand operand.
    The grammar (as of Chapter 6) becomes `unary → ( ( "!" | "-" | "+" | "*" | "/" | "==" | "!=" | "<" | "<=" | ">" | ">=" ) unary ) | primary ;` but, after parsing the full `Unary` expression, `Parser._unary` raises a `ParserError` if the `op` is not in `{ "!", "-" }`.
 
+### 8: Statements and State
+
+1. Add support to the REPL for expressions: if an expression is entered, evaluate it and print its result (currently, a statement is required; entering an expression results in `[line 1] Error at end: Expect ';' after expression.`).
+
 ## Non-reference `Lox`
 
 ### `Lox`
