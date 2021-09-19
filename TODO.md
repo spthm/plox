@@ -29,23 +29,23 @@
 
 ### 6: Parsing Expressions
 
-2. Implement support for the ternary operator.
-   To [match C](https://en.cppreference.com/w/cpp/language/operator_precedence), the grammar (as of Chapter 6) is `conditional-expression → ( equality '?' expression ':' conditional-expression ) | equality ;`.
-   Note also that there are other [ternary operators](https://en.wikipedia.org/wiki/Ternary_operation).
+- [ ] Implement support for the ternary operator.
+  To [match C](https://en.cppreference.com/w/cpp/language/operator_precedence), the grammar (as of Chapter 6) is `conditional-expression → ( equality '?' expression ':' conditional-expression ) | equality ;`.
+  Note also that there are other [ternary operators](https://en.wikipedia.org/wiki/Ternary_operation).
 
-3. Add error productions for binary operators without a left-hand operand.
-   The grammar (as of Chapter 6) becomes `unary → ( ( "!" | "-" | "+" | "*" | "/" | "==" | "!=" | "<" | "<=" | ">" | ">=" ) unary ) | primary ;` but, after parsing the full `Unary` expression, `Parser._unary` raises a `ParserError` if the `op` is not in `{ "!", "-" }`.
+- [ ] Add error productions for binary operators without a left-hand operand.
+  The grammar (as of Chapter 6) becomes `unary → ( ( "!" | "-" | "+" | "*" | "/" | "==" | "!=" | "<" | "<=" | ">" | ">=" ) unary ) | primary ;` but, after parsing the full `Unary` expression, `Parser._unary` raises a `ParserError` if the `op` is not in `{ "!", "-" }`.
 
 ### 8: Statements and State
 
-1. Add support to the REPL for expressions: if an expression is entered, evaluate it and print its result (currently, a statement is required; entering an expression results in `[line 1] Error at end: Expect ';' after expression.`).
+- [ ] Add support to the REPL for expressions: if an expression is entered, evaluate it and print its result (currently, a statement is required; entering an expression results in `[line 1] Error at end: Expect ';' after expression.`).
 
 ### 9: Control Flow
 
-3. Implement `break` statements.
-Runtime behaviour can be implemented by raising a new `BreakException` from the `execute` for `break`, and catching it in the `execute` of `While`.
-To make it a syntax error to include a `break` outside of a loop, we need to know if we're currently in a loop, or not, during parsing.
-A simple `self._in_loop` might be sufficient (else a loop-depth counter or a stack).
+- [ ] Implement `break` statements.
+  Runtime behaviour can be implemented by raising a new `BreakException` from the `execute` for `break`, and catching it in the `execute` of `While`.
+  To make it a syntax error to include a `break` outside of a loop, we need to know if we're currently in a loop, or not, during parsing.
+  A simple `self._in_loop` might be sufficient (else a loop-depth counter or a stack).
 
 ## Non-reference `Lox`
 
