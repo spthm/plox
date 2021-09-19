@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 from plox.ast import (
     Assign,
@@ -13,6 +13,7 @@ from plox.ast import (
     Print,
     Stmt,
     Unary,
+    While,
 )
 from plox.ast.expressions import Variable
 from plox.ast.statements import Var
@@ -51,7 +52,7 @@ class Parser:
             return self._variable_declaration()
         return self._statement()
 
-    def _variable_declaration(self) -> Stmt:
+    def _variable_declaration(self) -> Var:
         name = self._consume(TokenType.IDENTIFIER, "Expect a variable name.")
         initializer = (
             self._expression() if self._match(TokenType.EQUAL) else Literal(None)
@@ -62,13 +63,50 @@ class Parser:
         return Var(name, initializer)
 
     def _statement(self) -> Stmt:
+        if self._match(TokenType.FOR):
+            return self._for_statement()
         if self._match(TokenType.IF):
             return self._if_statement()
         if self._match(TokenType.PRINT):
             return self._print_statement()
+        if self._match(TokenType.WHILE):
+            return self._while_statement()
         if self._match(TokenType.LEFT_BRACE):
             return self._block_statement()
         return self._expression_statement()
+
+    def _for_statement(self) -> Union[Block, While]:
+        self._consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.")
+
+        initializer: Union[None, Expression, Var]
+        if self._match(TokenType.SEMICOLON):
+            initializer = None
+        elif self._match(TokenType.VAR):
+            initializer = self._variable_declaration()
+        else:
+            initializer = self._expression_statement()
+
+        condition = (
+            Literal(True) if self._check(TokenType.SEMICOLON) else self._expression()
+        )
+        self._consume(TokenType.SEMICOLON, "Expect ';' after loop condition.")
+
+        increment = (
+            None
+            if self._check(TokenType.RIGHT_PAREN)
+            else Expression(self._expression())
+        )
+        self._consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.")
+
+        body = self._statement()
+        if increment is not None:
+            body = Block([body, increment])
+        body = While(condition, body)
+
+        if initializer is not None:
+            body = Block([initializer, body])
+
+        return body
 
     def _if_statement(self) -> If:
         self._consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.")
@@ -84,6 +122,15 @@ class Parser:
         value = self._expression()
         self._consume(TokenType.SEMICOLON, "Expect ';' after value.")
         return Print(value)
+
+    def _while_statement(self) -> While:
+        self._consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.")
+        condition = self._expression()
+        self._consume(TokenType.RIGHT_PAREN, "Expect ')' after condition.")
+
+        body = self._statement()
+
+        return While(condition, body)
 
     def _block_statement(self) -> Block:
         statements = []

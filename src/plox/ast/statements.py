@@ -36,4 +36,10 @@ class Var:
     initializer: Expr
 
 
-Stmt = Union[Block, Expression, If, Print, Var]
+@dataclass(frozen=True)
+class While:
+    condition: Expr
+    body: Stmt
+
+
+Stmt = Union[Block, Expression, If, Print, Var, While]

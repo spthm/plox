@@ -11,7 +11,7 @@ from .expressions import (
     Variable,
 )
 from .printer import ast_str
-from .statements import Block, Expression, If, Print, Stmt, Var
+from .statements import Block, Expression, If, Print, Stmt, Var, While
 
 __all__ = [
     # .evaluation
@@ -36,4 +36,5 @@ __all__ = [
     "Print",
     "Stmt",
     "Var",
+    "While",
 ]

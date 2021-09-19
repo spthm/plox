@@ -4,7 +4,7 @@ from typing import Any, overload
 from plox.environment import Environment
 
 from .evaluation import _truthy, evaluate
-from .statements import Block, Expression, If, Print, Stmt, Var
+from .statements import Block, Expression, If, Print, Stmt, Var, While
 
 
 def _stringify(value: object) -> str:
@@ -67,6 +67,13 @@ def execute(stmt: Print, env: Environment) -> None:
 def execute(stmt: Var, env: Environment) -> None:
     value = evaluate(stmt.initializer, env)
     env.define(stmt.name, value)
+
+
+@overload
+@_execute.register(While)
+def execute(stmt: While, env: Environment) -> None:
+    while _truthy(evaluate(stmt.condition, env)):
+        execute(stmt.body, env)
 
 
 def execute(stmt: Stmt, env: Environment) -> None:
