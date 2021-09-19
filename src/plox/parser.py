@@ -13,10 +13,10 @@ from plox.ast import (
     Print,
     Stmt,
     Unary,
+    Var,
+    Variable,
     While,
 )
-from plox.ast.expressions import Variable
-from plox.ast.statements import Var
 from plox.errors import ParserError, report
 from plox.tokens import Token, TokenType
 
