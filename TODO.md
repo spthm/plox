@@ -19,7 +19,7 @@
 
 ### `ast.ast_str`
 
-- Remoe this, or instead add a `__str__` method for each statement and expression class.
+- Remove this, or instead add a `__str__` method for each statement and expression class.
 
 ### `evaluate`
 
