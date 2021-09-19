@@ -3,8 +3,8 @@ from typing import Any, overload
 
 from plox.environment import Environment
 
-from .evaluation import evaluate
-from .statements import Block, Expression, Print, Stmt, Var
+from .evaluation import _truthy, evaluate
+from .statements import Block, Expression, If, Print, Stmt, Var
 
 
 def _stringify(value: object) -> str:
@@ -40,6 +40,15 @@ def execute(stmt: Block, env: Environment) -> None:
 @_execute.register(Expression)
 def execute(stmt: Expression, env: Environment) -> None:
     evaluate(stmt.expression, env)
+
+
+@overload
+@_execute.register(If)
+def execute(stmt: If, env: Environment) -> None:
+    if _truthy(evaluate(stmt.condition, env)):
+        execute(stmt.then_branch, env)
+    elif stmt.else_branch is not None:
+        execute(stmt.else_branch, env)
 
 
 @overload

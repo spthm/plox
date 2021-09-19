@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional, Union
 
 from plox.tokens import Token
 
@@ -19,6 +19,13 @@ class Expression:
 
 
 @dataclass(frozen=True)
+class If:
+    condition: Expr
+    then_branch: Stmt
+    else_branch: Optional[Stmt]
+
+
+@dataclass(frozen=True)
 class Print:
     expression: Expr
 
@@ -29,4 +36,4 @@ class Var:
     initializer: Expr
 
 
-Stmt = Union[Block, Expression, Print, Var]
+Stmt = Union[Block, Expression, If, Print, Var]

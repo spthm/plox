@@ -7,6 +7,7 @@ from plox.ast import (
     Expr,
     Expression,
     Grouping,
+    If,
     Literal,
     Print,
     Stmt,
@@ -60,11 +61,23 @@ class Parser:
         return Var(name, initializer)
 
     def _statement(self) -> Stmt:
+        if self._match(TokenType.IF):
+            return self._if_statement()
         if self._match(TokenType.PRINT):
             return self._print_statement()
         if self._match(TokenType.LEFT_BRACE):
             return self._block_statement()
         return self._expression_statement()
+
+    def _if_statement(self) -> If:
+        self._consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.")
+        condition = self._expression()
+        self._consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition.")
+
+        then_branch = self._statement()
+        else_branch = self._statement() if self._match(TokenType.ELSE) else None
+
+        return If(condition, then_branch, else_branch)
 
     def _print_statement(self) -> Print:
         value = self._expression()
