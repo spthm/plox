@@ -40,6 +40,13 @@
 
 1. Add support to the REPL for expressions: if an expression is entered, evaluate it and print its result (currently, a statement is required; entering an expression results in `[line 1] Error at end: Expect ';' after expression.`).
 
+### 9: Control Flow
+
+3. Implement `break` statements.
+Runtime behaviour can be implemented by raising a new `BreakException` from the `execute` for `break`, and catching it in the `execute` of `While`.
+To make it a syntax error to include a `break` outside of a loop, we need to know if we're currently in a loop, or not, during parsing.
+A simple `self._in_loop` might be sufficient (else a loop-depth counter or a stack).
+
 ## Non-reference `Lox`
 
 ### `Lox`
