@@ -1,6 +1,15 @@
 from .evaluation import evaluate
 from .execution import execute
-from .expressions import Assign, Binary, Expr, Grouping, Literal, Unary, Variable
+from .expressions import (
+    Assign,
+    Binary,
+    Expr,
+    Grouping,
+    Literal,
+    Logical,
+    Unary,
+    Variable,
+)
 from .printer import ast_str
 from .statements import Block, Expression, If, Print, Stmt, Var
 
@@ -13,6 +22,7 @@ __all__ = [
     "Expr",
     "Grouping",
     "Literal",
+    "Logical",
     "Unary",
     "Variable",
     # .execution

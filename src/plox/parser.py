@@ -9,6 +9,7 @@ from plox.ast import (
     Grouping,
     If,
     Literal,
+    Logical,
     Print,
     Stmt,
     Unary,
@@ -102,7 +103,7 @@ class Parser:
         return self._assignment()
 
     def _assignment(self) -> Expr:
-        expr = self._equality()
+        expr = self._or()
 
         if self._match(TokenType.EQUAL):
             equals = self._previous()
@@ -114,6 +115,26 @@ class Parser:
             # The parser is not in a confused state, so we do not need to raise and
             # trigger a _synchronize().
             self._error("Invalid assignment target.", equals)
+
+        return expr
+
+    def _or(self) -> Expr:
+        expr = self._and()
+
+        while self._match(TokenType.OR):
+            op = self._previous()
+            rhs = self._and()
+            expr = Logical(expr, op, rhs)
+
+        return expr
+
+    def _and(self) -> Expr:
+        expr = self._equality()
+
+        while self._match(TokenType.AND):
+            op = self._previous()
+            rhs = self._equality()
+            expr = Logical(expr, op, rhs)
 
         return expr
 

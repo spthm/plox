@@ -7,7 +7,16 @@ from plox.environment import Environment
 from plox.errors import ExecutionError
 from plox.tokens import Token, TokenType
 
-from .expressions import Assign, Binary, Expr, Grouping, Literal, Unary, Variable
+from .expressions import (
+    Assign,
+    Binary,
+    Expr,
+    Grouping,
+    Literal,
+    Logical,
+    Unary,
+    Variable,
+)
 
 
 def _binary_op_error(op: Token) -> str:
@@ -138,6 +147,21 @@ def evaluate(expr: Grouping, env: Environment) -> object:
 @_evaluate.register(Literal)
 def evaluate(expr: Literal, env: Environment) -> object:
     return expr.value
+
+
+@overload
+@_evaluate.register(Logical)
+def evaluate(expr: Logical, env: Environment) -> object:
+    left = evaluate(expr.left, env)
+
+    if expr.operator.kind == TokenType.OR:
+        if _truthy(left):
+            return left
+    else:
+        if not _truthy(left):
+            return left
+
+    return evaluate(expr.right, env)
 
 
 @overload

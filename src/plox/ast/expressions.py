@@ -30,6 +30,13 @@ class Literal:
 
 
 @dataclass(frozen=True)
+class Logical:
+    left: Expr
+    operator: Token
+    right: Expr
+
+
+@dataclass(frozen=True)
 class Unary:
     operator: Token
     right: Expr
@@ -40,4 +47,4 @@ class Variable:
     name: Token
 
 
-Expr = Union[Assign, Binary, Grouping, Literal, Unary, Variable]
+Expr = Union[Assign, Binary, Grouping, Literal, Logical, Unary, Variable]
