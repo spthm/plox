@@ -23,6 +23,10 @@ def _stringify(value: object) -> str:
     return text
 
 
+# mypy's @overload is buggy for @singledispatch. Use of the separate _execute here
+# is a workaround https://github.com/python/mypy/issues/8356.
+
+
 @singledispatch
 def _execute(stmt: Any, _: Environment) -> None:
     raise TypeError(f"execute does not support {type(stmt)}")
