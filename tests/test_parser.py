@@ -1,7 +1,7 @@
 import pytest
 
 from plox.ast.expressions import Assign, Binary, Grouping, Literal, Unary, Variable
-from plox.ast.statements import Block, Expression, Var
+from plox.ast.statements import Block, Expression, If, Print, Var, While
 from plox.errors import ParserError
 from plox.parser import Parser
 from plox.tokens import Token, TokenType
@@ -360,3 +360,590 @@ def test_print_no_expression(capsys):
 
     _, err = capsys.readouterr()
     assert "Error at ';': Expect expression." in err
+
+
+def test_if_expression_else_expression():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/if/else.lox
+    if_ = Token(TokenType.IF, "if", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    true = Token(TokenType.TRUE, "true", None, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1)
+    good = Token(TokenType.STRING, '"good"', "good", 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    else_ = Token(TokenType.ELSE, "else", None, 1)
+    bad = Token(TokenType.STRING, '"bad"', "bad", 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # if (true) print "good"; else print "bad";
+    tokens = [
+        if_,
+        lparen,
+        true,
+        rparen,
+        print_,
+        good,
+        semicolon,
+        else_,
+        print_,
+        bad,
+        semicolon,
+        end,
+    ]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == If(
+        Literal(True), Print(Literal("good")), Print(Literal("bad"))
+    )
+
+
+def test_if_expression_else_block():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/if/else.lox
+    if_ = Token(TokenType.IF, "if", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    false = Token(TokenType.FALSE, "false", None, 1)
+    nil = Token(TokenType.NIL, "nil", None, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    else_ = Token(TokenType.ELSE, "else", None, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1)
+    block = Token(TokenType.STRING, '"block"', "block", 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # if (false) nil; else { print "block"; }
+    tokens = [
+        if_,
+        lparen,
+        false,
+        rparen,
+        nil,
+        semicolon,
+        else_,
+        lbrace,
+        print_,
+        block,
+        semicolon,
+        rbrace,
+        end,
+    ]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == If(
+        Literal(False), Expression(Literal(None)), Block([Print(Literal("block"))])
+    )
+
+
+def test_if_expression_no_else():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/if/if.lox
+    if_ = Token(TokenType.IF, "if", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    true = Token(TokenType.TRUE, "true", None, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1)
+    good = Token(TokenType.STRING, '"good"', "good", 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # if (true) print "good";
+    tokens = [if_, lparen, true, rparen, print_, good, semicolon, end]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == If(Literal(True), Print(Literal("good")), None)
+
+
+def test_if_block_no_else():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/if/if.lox
+    if_ = Token(TokenType.IF, "if", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    true = Token(TokenType.TRUE, "true", None, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1)
+    block = Token(TokenType.STRING, '"block"', "block", 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # if (true) { print "block"; }
+    tokens = [if_, lparen, true, rparen, lbrace, print_, block, semicolon, rbrace, end]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == If(Literal(True), Block([Print(Literal("block"))]), None)
+
+
+def test_dangling_else_binds_rightmost():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/if/dangling_else.lox
+    if_ = Token(TokenType.IF, "if", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    true = Token(TokenType.TRUE, "true", None, 1)
+    false = Token(TokenType.FALSE, "false", None, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1)
+    bad = Token(TokenType.STRING, '"bad"', "bad", 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    else_ = Token(TokenType.ELSE, "else", None, 1)
+    bad = Token(TokenType.STRING, '"bad"', "bad", 1)
+    good = Token(TokenType.STRING, '"good"', "good", 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # if (true) if (false) print "bad"; else print "good";
+    tokens = [
+        if_,
+        lparen,
+        true,
+        rparen,
+        if_,
+        lparen,
+        false,
+        rparen,
+        print_,
+        bad,
+        semicolon,
+        else_,
+        print_,
+        good,
+        semicolon,
+        end,
+    ]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == If(
+        Literal(True),
+        If(Literal(False), Print(Literal("bad")), Print(Literal("good"))),
+        None,
+    )
+
+
+def test_for_statement_condition(capsys):
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/statement_condition.lox
+    for_ = Token(TokenType.FOR, "for", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    var = Token(TokenType.VAR, "var", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # for (var a = 1; {}; a = a + 1) {}
+    tokens = [
+        for_,
+        lparen,
+        var,
+        a,
+        equals,
+        one,
+        semicolon,
+        lbrace,
+        rbrace,
+        semicolon,
+        a,
+        equals,
+        a,
+        plus,
+        one,
+        rparen,
+        lbrace,
+        rbrace,
+        end,
+    ]
+
+    with pytest.raises(ParserError, match="Expect expression"):
+        Parser(tokens).parse()
+
+    _, err = capsys.readouterr()
+    assert "Error at '{': Expect expression." in err
+    assert "Error at ')': Expect ';' after expression." in err
+
+
+def test_for_statement_increment(capsys):
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/statement_increment.lox
+    for_ = Token(TokenType.FOR, "for", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    var = Token(TokenType.VAR, "var", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    lt = Token(TokenType.LESS, "<", None, 1)
+    two = Token(TokenType.NUMBER, "2", 2, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # for (var a = 1; a < 2; {}) {}
+    tokens = [
+        for_,
+        lparen,
+        var,
+        a,
+        equals,
+        one,
+        semicolon,
+        a,
+        lt,
+        two,
+        semicolon,
+        lbrace,
+        rbrace,
+        semicolon,
+        rparen,
+        lbrace,
+        rbrace,
+        end,
+    ]
+
+    with pytest.raises(ParserError, match="Expect expression"):
+        Parser(tokens).parse()
+
+    _, err = capsys.readouterr()
+    assert "Error at '{': Expect expression." in err
+
+
+def test_for_statement_initializer(capsys):
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/statement_initializer.lox
+    for_ = Token(TokenType.FOR, "for", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    lt = Token(TokenType.LESS, "<", None, 1)
+    two = Token(TokenType.NUMBER, "2", 2, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # for ({}; a < 2; a = a + 1) {}
+    tokens = [
+        for_,
+        lparen,
+        lbrace,
+        rbrace,
+        semicolon,
+        a,
+        lt,
+        two,
+        semicolon,
+        a,
+        equals,
+        a,
+        plus,
+        one,
+        rparen,
+        lbrace,
+        rbrace,
+        end,
+    ]
+
+    with pytest.raises(ParserError, match="Expect expression"):
+        Parser(tokens).parse()
+
+    _, err = capsys.readouterr()
+    assert "Error at '{': Expect expression." in err
+    assert "Error at ')': Expect ';' after expression." in err
+
+
+def test_for_single_expression_body():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/syntax.lox
+    for_ = Token(TokenType.FOR, "for", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    var = Token(TokenType.VAR, "var", None, 1)
+    c = Token(TokenType.IDENTIFIER, "c", None, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1)
+    zero = Token(TokenType.NUMBER, "0", 0, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    lt = Token(TokenType.LESS, "<", None, 1)
+    three = Token(TokenType.NUMBER, "3", 3, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # for (var c = 0; c < 3;) c = c + 1;
+    tokens = [
+        for_,
+        lparen,
+        var,
+        c,
+        equals,
+        zero,
+        semicolon,
+        c,
+        lt,
+        three,
+        semicolon,
+        rparen,
+        c,
+        equals,
+        c,
+        plus,
+        one,
+        semicolon,
+        end,
+    ]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == Block(
+        [
+            Var(c, Literal(0.0)),
+            While(
+                Binary(Variable(c), lt, Literal(3.0)),
+                Expression(Assign(c, Binary(Variable(c), plus, Literal(1.0)))),
+            ),
+        ]
+    )
+
+
+def test_for_block_body():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/syntax.lox
+    for_ = Token(TokenType.FOR, "for", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    var = Token(TokenType.VAR, "var", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1)
+    zero = Token(TokenType.NUMBER, "0", 0, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    lt = Token(TokenType.LESS, "<", None, 1)
+    three = Token(TokenType.NUMBER, "3", 3, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "{", None, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # for (var a = 0; a < 3; a = a + 1) {
+    #   print a;
+    # }
+    tokens = [
+        for_,
+        lparen,
+        var,
+        a,
+        equals,
+        zero,
+        semicolon,
+        a,
+        lt,
+        three,
+        semicolon,
+        a,
+        equals,
+        a,
+        plus,
+        one,
+        rparen,
+        lbrace,
+        print_,
+        a,
+        semicolon,
+        rbrace,
+        end,
+    ]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == Block(
+        [
+            Var(a, Literal(0.0)),
+            While(
+                Binary(Variable(a), lt, Literal(3.0)),
+                Block(
+                    [
+                        Block(
+                            [
+                                Print(Variable(a)),
+                            ]
+                        ),
+                        Expression(Assign(a, Binary(Variable(a), plus, Literal(1.0)))),
+                    ]
+                ),
+            ),
+        ]
+    )
+
+
+def test_for_statement_body():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/syntax.lox
+    for_ = Token(TokenType.FOR, "for", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    false = Token(TokenType.FALSE, "false", False, 1)
+    true = Token(TokenType.TRUE, "true", True, 1)
+    if_ = Token(TokenType.IF, "if", None, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    two = Token(TokenType.NUMBER, "2", 2, 1)
+    else_ = Token(TokenType.ELSE, "else", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # for (; false;) if (true) 1; else 2;
+    tokens = [
+        for_,
+        lparen,
+        semicolon,
+        false,
+        semicolon,
+        rparen,
+        if_,
+        lparen,
+        true,
+        rparen,
+        one,
+        semicolon,
+        else_,
+        two,
+        semicolon,
+        end,
+    ]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == While(
+        Literal(False),
+        If(Literal(True), Expression(Literal(1)), Expression(Literal(2))),
+    )
+
+
+def test_while_single_expression_body():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/while/syntax.lox
+    while_ = Token(TokenType.WHILE, "while", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    c = Token(TokenType.IDENTIFIER, "c", None, 1)
+    lt = Token(TokenType.LESS, "<", None, 1)
+    three = Token(TokenType.NUMBER, "3", 3, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # while (c < 3) print c = c + 1;
+    tokens = [
+        while_,
+        lparen,
+        c,
+        lt,
+        three,
+        rparen,
+        print_,
+        c,
+        equals,
+        c,
+        plus,
+        one,
+        semicolon,
+        end,
+    ]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == While(
+        Binary(Variable(c), lt, Literal(3.0)),
+        Print(Assign(c, Binary(Variable(c), plus, Literal(1.0)))),
+    )
+
+
+def test_while_block_body():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/while/syntax.lox
+    while_ = Token(TokenType.WHILE, "while", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    lt = Token(TokenType.LESS, "<", None, 1)
+    three = Token(TokenType.NUMBER, "3", 3, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "{", None, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # while (a < 3) {
+    #   a = a + 1;
+    # }
+    tokens = [
+        while_,
+        lparen,
+        a,
+        lt,
+        three,
+        rparen,
+        lbrace,
+        a,
+        equals,
+        a,
+        plus,
+        one,
+        semicolon,
+        rbrace,
+        end,
+    ]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == While(
+        Binary(Variable(a), lt, Literal(3.0)),
+        Block([Expression(Assign(a, Binary(Variable(a), plus, Literal(1.0))))]),
+    )
+
+
+def test_while_statement_body():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/while/syntax.lox
+    while_ = Token(TokenType.WHILE, "while", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    false = Token(TokenType.FALSE, "false", False, 1)
+    true = Token(TokenType.TRUE, "true", True, 1)
+    if_ = Token(TokenType.IF, "if", None, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    two = Token(TokenType.NUMBER, "2", 2, 1)
+    else_ = Token(TokenType.ELSE, "else", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # while (false) if (true) 1; else 2;
+    tokens = [
+        while_,
+        lparen,
+        false,
+        rparen,
+        if_,
+        lparen,
+        true,
+        rparen,
+        one,
+        semicolon,
+        else_,
+        two,
+        semicolon,
+        end,
+    ]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == While(
+        Literal(False),
+        If(Literal(True), Expression(Literal(1)), Expression(Literal(2))),
+    )
