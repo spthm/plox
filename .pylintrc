@@ -62,7 +62,10 @@ max-module-lines=800
 [SIMILARITIES]
 
 # Minimum lines number of a similarity.
-min-similarity-lines=5
+min-similarity-lines=10
+
+# Do not report similar import lines.
+ignore-imports=yes
 
 
 [BASIC]
