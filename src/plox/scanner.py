@@ -176,7 +176,7 @@ class Scanner:
             self._identifier()
 
         else:
-            raise ScannerError(f"Unexpected character: {char}", self._lno)
+            raise ScannerError(f"Unexpected character: {char}.", self._lno)
 
     def _string(self) -> None:
         while (peek := self._peek()) != '"' and not self._at_end():
@@ -186,7 +186,7 @@ class Scanner:
             self._advance()
 
         if self._at_end():
-            raise ScannerError("Unterminated string", self._lno)
+            raise ScannerError("Unterminated string.", self._lno)
 
         # The closing '"'
         self._advance()

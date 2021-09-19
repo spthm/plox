@@ -1,5 +1,8 @@
 from textwrap import dedent
 
+import pytest
+
+from plox.errors import ScannerError
 from plox.scanner import Scanner
 from plox.tokens import Token, TokenType
 
@@ -118,6 +121,17 @@ def test_strings():
         Token(TokenType.STRING, '"string"', "string", 3),
         Token(TokenType.EOF, "", None, 5),
     ]
+
+
+def test_unterminated_string(capsys):
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/string/unterminated.lox
+    src = """"this string has no close quote"""
+
+    with pytest.raises(ScannerError, match="Unterminated string"):
+        Scanner(dedent(src)).scan_tokens()
+
+    _, err = capsys.readouterr()
+    assert "[line 1] Error: Unterminated string." in err
 
 
 def test_whitespace():
