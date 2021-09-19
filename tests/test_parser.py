@@ -6,6 +6,9 @@ from plox.errors import ParserError
 from plox.parser import Parser
 from plox.tokens import Token, TokenType
 
+# pylint: disable=too-many-lines
+# pylint: disable=too-many-locals
+
 
 # fmt: off
 def test_parse_grouping():
