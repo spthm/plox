@@ -4,6 +4,7 @@ from plox.ast import (
     Assign,
     Binary,
     Block,
+    Call,
     Expr,
     Expression,
     Grouping,
@@ -236,7 +237,15 @@ class Parser:
             rhs = self._unary()
             return Unary(op, rhs)
 
-        return self._primary()
+        return self._call()
+
+    def _call(self) -> Expr:
+        expr = self._primary()
+
+        while self._match(TokenType.LEFT_PAREN):
+            expr = self._finish_call(expr)
+
+        return expr
 
     def _primary(self) -> Expr:
         if self._match(TokenType.TRUE):
@@ -285,6 +294,28 @@ class Parser:
         if self._exc is None:
             self._exc = e
         return e
+
+    def _finish_call(self, callee: Expr):
+        arguments: list[Expr] = []
+
+        # Account for the zero-argument case.
+        if not self._check(TokenType.RIGHT_PAREN):
+            arguments.append(self._expression())
+
+            while self._match(TokenType.COMMA):
+                arguments.append(self._expression())
+
+        if len(arguments) >= 255:
+            # The parser isn't confused, so we don't need to raise.
+            # The reference jlox does this in-loop above, which seems to be
+            # overkill since all the arguments still need to be parsed. On the
+            # other hand, this will point to the end of the function call, not
+            # the 255th argument.
+            self._error("Can't have more than 255 arguments.", self._peek())
+
+        paren = self._consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments.")
+
+        return Call(callee, paren, arguments)
 
     def _match(self, *args: TokenType) -> bool:
         if any(self._check(kind) for kind in args):

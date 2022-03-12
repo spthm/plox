@@ -20,6 +20,13 @@ class Binary:
 
 
 @dataclass(frozen=True)
+class Call:
+    callee: Expr
+    paren: Token
+    arguments: list[Expr]
+
+
+@dataclass(frozen=True)
 class Grouping:
     expression: Expr
 
@@ -47,4 +54,4 @@ class Variable:
     name: Token
 
 
-Expr = Union[Assign, Binary, Grouping, Literal, Logical, Unary, Variable]
+Expr = Union[Assign, Binary, Call, Grouping, Literal, Logical, Unary, Variable]

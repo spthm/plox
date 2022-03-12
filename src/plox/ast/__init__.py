@@ -3,6 +3,7 @@ from .execution import execute
 from .expressions import (
     Assign,
     Binary,
+    Call,
     Expr,
     Grouping,
     Literal,
@@ -19,6 +20,7 @@ __all__ = [
     # .expressions
     "Assign",
     "Binary",
+    "Call",
     "Expr",
     "Grouping",
     "Literal",
