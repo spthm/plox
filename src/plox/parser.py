@@ -56,7 +56,7 @@ class Parser:
             return self._variable_declaration()
         return self._statement()
 
-    def _function_declaration(self, kind: str):
+    def _function_declaration(self, kind: str) -> Function:
         name = self._consume(TokenType.IDENTIFIER, f"Expect {kind} name.")
         parameters: list[Token] = []
 
@@ -330,7 +330,7 @@ class Parser:
             self._exc = e
         return e
 
-    def _finish_call(self, callee: Expr):
+    def _finish_call(self, callee: Expr) -> Call:
         arguments: list[Expr] = []
 
         # Account for the zero-argument case.

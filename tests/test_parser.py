@@ -16,6 +16,7 @@ from plox.tokens import Token, TokenType
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-locals
+# pylint: disable=invalid-name
 
 
 # fmt: off

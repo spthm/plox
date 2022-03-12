@@ -33,26 +33,26 @@ def test_evaluate():
 
 def test_assignment():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/assignment/grouping.lox
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    id_a = Token(TokenType.IDENTIFIER, "a", None, 1)
     literal_a = Literal("a")
 
     # var a;
     # a = "a"
     env = Environment()
-    env.define(a, None)
-    expr = Assign(a, literal_a)
+    env.define(id_a, None)
+    expr = Assign(id_a, literal_a)
 
     assert evaluate(expr, env) == literal_a.value
 
 
 def test_assignment_undefined_variable():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/assignment/undefined.lox
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    id_a = Token(TokenType.IDENTIFIER, "a", None, 1)
     literal_a = Literal("a")
 
     # a = "a";
     env = Environment()
-    expr = Assign(a, literal_a)
+    expr = Assign(id_a, literal_a)
 
     with pytest.raises(ExecutionError, match="Undefined variable 'a'"):
         assert evaluate(expr, env) == literal_a.value

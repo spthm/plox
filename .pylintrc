@@ -71,7 +71,7 @@ ignore-imports=yes
 [BASIC]
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=a,b,c,e,i,j,k,m,n,s,t,v,x,gt,lt,op
+good-names=e,i,j,k,m,n,s,t,v,x,op
 
 
 [DESIGN]
