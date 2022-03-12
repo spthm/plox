@@ -7,6 +7,7 @@ from plox.ast import (
     Call,
     Expr,
     Expression,
+    Function,
     Grouping,
     If,
     Literal,
@@ -49,9 +50,43 @@ class Parser:
         return statements
 
     def _declaration(self) -> Stmt:
+        if self._match(TokenType.FUN):
+            return self._function_declaration("function")
         if self._match(TokenType.VAR):
             return self._variable_declaration()
         return self._statement()
+
+    def _function_declaration(self, kind: str):
+        name = self._consume(TokenType.IDENTIFIER, f"Expect {kind} name.")
+        parameters: list[Token] = []
+
+        self._consume(TokenType.LEFT_PAREN, f"Expect '(' after {kind} name.")
+
+        # Account for zero-argument case.
+        if not self._check(TokenType.RIGHT_PAREN):
+            parameters.append(
+                self._consume(TokenType.IDENTIFIER, "Expect parameter name.")
+            )
+
+            while self._match(TokenType.COMMA):
+                parameters.append(
+                    self._consume(TokenType.IDENTIFIER, "Expect parameter name.")
+                )
+
+        # The parser isn't confused, so we don't need to raise.
+        # The reference jlox does this in-loop above, which seems to be
+        # overkill since all the arguments still need to be parsed. On the
+        # other hand, this will point to the end of the function call, not
+        # the 256th argument.
+        if len(parameters) > 255:
+            self._error("Can't have more than 255 parameters.", self._peek())
+
+        self._consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters.")
+
+        self._consume(TokenType.LEFT_BRACE, f"Expect '{{' before {kind} body.")
+        body = self._block_statement()
+
+        return Function(name, parameters, body)
 
     def _variable_declaration(self) -> Var:
         name = self._consume(TokenType.IDENTIFIER, "Expect a variable name.")

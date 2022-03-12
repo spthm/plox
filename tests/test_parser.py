@@ -9,7 +9,7 @@ from plox.ast.expressions import (
     Unary,
     Variable,
 )
-from plox.ast.statements import Block, Expression, If, Print, Var, While
+from plox.ast.statements import Block, Expression, Function, If, Print, Var, While
 from plox.errors import ParserError
 from plox.parser import Parser
 from plox.tokens import Token, TokenType
@@ -1014,3 +1014,162 @@ def test_call_too_many_arguments(capsys):
 
     _, err = capsys.readouterr()
     assert "Error at ')': Can't have more than 255 arguments." in err
+
+
+def test_function_declaration_no_parameters():
+    fun = Token(TokenType.FUN, "fun", None, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # fun foo() {}
+    tokens = [fun, foo, lparen, rparen, lbrace, rbrace, end]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == Function(foo, [], Block([]))
+
+
+def test_function_declaration_with_parameters():
+    fun = Token(TokenType.FUN, "fun", None, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    b = Token(TokenType.IDENTIFIER, "b", None, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # fun foo(a, b) {}
+    tokens = [fun, foo, lparen, a, comma, b, rparen, lbrace, rbrace, end]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == Function(foo, [a, b], Block([]))
+
+
+def test_function_declaration_too_many_parameters(capsys):
+    # https://github.com/munificent/craftinginterpreters/blob/01e6f5b8f3e5dfa65674c2f9cf4700d73ab41cf8/test/function/too_many_parameters.lox
+    fun = Token(TokenType.FUN, "fun", None, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    b = Token(TokenType.IDENTIFIER, "b", None, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # fun foo(a, a, ..., a, b) {}
+    tokens = [fun, foo, lparen] + [a, comma] * 255 + [b] + [rparen, lbrace, rbrace, end]
+    with pytest.raises(ParserError, match="more than 255 parameters"):
+        Parser(tokens).parse()
+
+    _, err = capsys.readouterr()
+    assert "Error at ')': Can't have more than 255 parameters." in err
+
+
+def test_function_declaration_missing_comma(capsys):
+    # https://github.com/munificent/craftinginterpreters/blob/01e6f5b8f3e5dfa65674c2f9cf4700d73ab41cf8/test/function/missing_comma_in_parameters.lox
+    fun = Token(TokenType.FUN, "fun", None, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    b = Token(TokenType.IDENTIFIER, "b", None, 1)
+    c = Token(TokenType.IDENTIFIER, "c", None, 1)
+    d = Token(TokenType.IDENTIFIER, "d", None, 1)
+    e = Token(TokenType.IDENTIFIER, "e", None, 1)
+    f = Token(TokenType.IDENTIFIER, "f", None, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # fun foo(a, b c, d, e, f) {}
+    tokens = [
+        fun,
+        foo,
+        lparen,
+        a,
+        comma,
+        b,
+        c,
+        comma,
+        d,
+        comma,
+        e,
+        comma,
+        f,
+        rparen,
+        lbrace,
+        rbrace,
+        end,
+    ]
+    with pytest.raises(ParserError, match=r"Expect '\)' after parameters"):
+        Parser(tokens).parse()
+
+    _, err = capsys.readouterr()
+    assert "[line 1] Error at 'c': Expect ')' after parameters." in err
+
+
+def test_function_declaration_missing_body(capsys):
+    # https://github.com/munificent/craftinginterpreters/blob/01e6f5b8f3e5dfa65674c2f9cf4700d73ab41cf8/test/function/body_must_be_block.lox
+    fun = Token(TokenType.FUN, "fun", None, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    onetwothree = Token(TokenType.NUMBER, "123", 123, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # fun foo() 123
+    tokens = [fun, foo, lparen, rparen, onetwothree, semicolon, end]
+    with pytest.raises(ParserError, match="Expect '{' before function body"):
+        Parser(tokens).parse()
+
+    _, err = capsys.readouterr()
+    assert "[line 1] Error at '123': Expect '{' before function body." in err
+
+
+def test_function_declaration_missing_name(capsys):
+    fun = Token(TokenType.FUN, "fun", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+    # fun (a) {}
+    tokens = [fun, lparen, a, rparen, lbrace, rbrace, end]
+    with pytest.raises(ParserError, match="Expect function name"):
+        Parser(tokens).parse()
+
+    _, err = capsys.readouterr()
+    assert "[line 1] Error at '(': Expect function name." in err
+
+
+def test_function_declaration_missing_parameter(capsys):
+    fun = Token(TokenType.FUN, "fun", None, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # fun foo(a, ) {}
+    tokens = [fun, foo, lparen, a, comma, rparen, lbrace, rbrace, end]
+    with pytest.raises(ParserError, match="Expect parameter name"):
+        Parser(tokens).parse()
+
+    _, err = capsys.readouterr()
+    assert "[line 1] Error at ')': Expect parameter name." in err

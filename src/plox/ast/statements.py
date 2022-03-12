@@ -19,6 +19,13 @@ class Expression:
 
 
 @dataclass(frozen=True)
+class Function:
+    name: Token
+    parameters: list[Token]
+    body: Block
+
+
+@dataclass(frozen=True)
 class If:
     condition: Expr
     then_branch: Stmt
@@ -42,4 +49,4 @@ class While:
     body: Stmt
 
 
-Stmt = Union[Block, Expression, If, Print, Var, While]
+Stmt = Union[Block, Expression, Function, If, Print, Var, While]
