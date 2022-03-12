@@ -305,12 +305,12 @@ class Parser:
             while self._match(TokenType.COMMA):
                 arguments.append(self._expression())
 
-        if len(arguments) >= 255:
+        if len(arguments) > 255:
             # The parser isn't confused, so we don't need to raise.
             # The reference jlox does this in-loop above, which seems to be
             # overkill since all the arguments still need to be parsed. On the
             # other hand, this will point to the end of the function call, not
-            # the 255th argument.
+            # the 256th argument.
             self._error("Can't have more than 255 arguments.", self._peek())
 
         paren = self._consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments.")

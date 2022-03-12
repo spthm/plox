@@ -16,6 +16,7 @@
 - Implement `Parser.parse` as a free function.
 - Internally `raise ParserError` if the provided list of tokens does not end with a `TokenType.EOF` token.
   Currently, this results in a hard crash with an `IndexError` from `parse()`.
+- For too-many arguments or parameters, the error message should reference the token of the overflowing argument, not the closing ')'.
 
 ### `ast.ast_str`
 

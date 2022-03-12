@@ -1,6 +1,14 @@
 import pytest
 
-from plox.ast.expressions import Assign, Binary, Grouping, Literal, Unary, Variable
+from plox.ast.expressions import (
+    Assign,
+    Binary,
+    Call,
+    Grouping,
+    Literal,
+    Unary,
+    Variable,
+)
 from plox.ast.statements import Block, Expression, If, Print, Var, While
 from plox.errors import ParserError
 from plox.parser import Parser
@@ -950,3 +958,59 @@ def test_while_statement_body():
         Literal(False),
         If(Literal(True), Expression(Literal(1)), Expression(Literal(2))),
     )
+
+
+def test_call_no_arguments():
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # foo();
+    tokens = [foo, lparen, rparen, semicolon, end]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == Expression(Call(Variable(foo), rparen, []))
+
+
+def test_call_with_arguments():
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    string_a = Token(TokenType.STRING, '"a"', "a", 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # foo(a, "a", 1);
+    tokens = [foo, lparen, a, comma, string_a, comma, one, rparen, semicolon, end]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == Expression(
+        Call(Variable(foo), rparen, [Variable(a), Literal("a"), Literal(1)])
+    )
+
+
+def test_call_too_many_arguments(capsys):
+    # https://github.com/munificent/craftinginterpreters/blob/01e6f5b8f3e5dfa65674c2f9cf4700d73ab41cf8/test/function/too_many_arguments.lox
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    b = Token(TokenType.IDENTIFIER, "b", None, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # foo(a, a, ..., a, b);
+    tokens = [foo, lparen] + [a, comma] * 255 + [b] + [rparen, semicolon, end]
+    with pytest.raises(ParserError, match="more than 255 arguments"):
+        Parser(tokens).parse()
+
+    _, err = capsys.readouterr()
+    assert "Error at ')': Can't have more than 255 arguments." in err
