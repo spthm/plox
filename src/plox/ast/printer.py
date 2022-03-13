@@ -4,6 +4,7 @@ from typing import overload
 from .expressions import (
     Assign,
     Binary,
+    Call,
     Expr,
     Grouping,
     Literal,
@@ -37,6 +38,12 @@ def ast_str(expr: Assign) -> str:
 @_ast_str.register(Binary)
 def ast_str(expr: Binary) -> str:
     return _parenthesize(expr.operator.lexeme, expr.left, expr.right)
+
+
+@overload
+@_ast_str.register(Call)
+def ast_str(expr: Call) -> str:
+    return _parenthesize("call", expr.callee, *expr.arguments)
 
 
 @overload

@@ -5,11 +5,13 @@ from typing import Any, Protocol, overload
 
 from plox.environment import Environment
 from plox.errors import ExecutionError
+from plox.protocols import SupportsCall
 from plox.tokens import Token, TokenType
 
 from .expressions import (
     Assign,
     Binary,
+    Call,
     Expr,
     Grouping,
     Literal,
@@ -135,6 +137,22 @@ def evaluate(expr: Binary, env: Environment) -> object:
 
         # Account for right being signed zero.
         return copysign(float("inf"), left * right)
+
+
+@overload
+@_evaluate.register(Call)
+def evaluate(expr: Call, env: Environment) -> object:
+    callee = evaluate(expr.callee, env)
+    if not isinstance(callee, SupportsCall):
+        raise ExecutionError("Can only call functions and classes.", expr.paren)
+
+    arguments = [evaluate(arg, env) for arg in expr.arguments]
+    if len(arguments) != callee.arity():
+        raise ExecutionError(
+            f"Expected {callee.arity()} arguments but got {len(arguments)}.", expr.paren
+        )
+
+    return callee.call(arguments)
 
 
 @overload
