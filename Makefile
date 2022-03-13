@@ -1,10 +1,17 @@
+.PHONY: fmt
+fmt:
+	-poetry run isort src/ tests/
+	-poetry run black src/ tests/
+
 .PHONY: lint
 lint:
-	poetry run tox -e lint
+	-poetry run pre-commit run --all-files
+	-poetry run pylint src/ tests/
+	-poetry run mypy src/ tests/
 
 .PHONY: test
 test:
-	poetry run pytest
+	poetry run tox
 
 .PHONY: update
 update:
