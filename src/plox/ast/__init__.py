@@ -12,7 +12,7 @@ from .expressions import (
     Variable,
 )
 from .printer import ast_str
-from .statements import Block, Expression, Function, If, Print, Stmt, Var, While
+from .statements import Block, Expression, Function, If, Print, Return, Stmt, Var, While
 
 __all__ = [
     # .evaluation
@@ -37,6 +37,7 @@ __all__ = [
     "Expression",
     "If",
     "Print",
+    "Return",
     "Stmt",
     "Var",
     "While",

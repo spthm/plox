@@ -4,7 +4,7 @@ from typing import Any, overload
 from plox.environment import Environment
 
 from .evaluation import _truthy, evaluate
-from .statements import Block, Expression, Function, If, Print, Stmt, Var, While
+from .statements import Block, Expression, Function, If, Print, Return, Stmt, Var, While
 
 
 def _stringify(value: object) -> str:
@@ -23,6 +23,12 @@ def _stringify(value: object) -> str:
     return text
 
 
+class ReturnException(RuntimeError):
+    def __init__(self, value: object):
+        super().__init__()
+        self.value = value
+
+
 class LoxFunction:
     def __init__(self, declaration: Function, env: Environment) -> None:
         self._declaration = declaration
@@ -36,7 +42,11 @@ class LoxFunction:
         for (parameter, argument) in zip(self._declaration.parameters, arguments):
             env.define(parameter, argument)
 
-        execute(self._declaration.body, env)
+        try:
+            execute(self._declaration.body, env)
+        except ReturnException as ret:
+            return ret.value
+
         return None
 
     def __str__(self) -> str:
@@ -87,6 +97,13 @@ def execute(stmt: If, env: Environment) -> None:
 def execute(stmt: Print, env: Environment) -> None:
     value = evaluate(stmt.expression, env)
     print(_stringify(value))
+
+
+@overload
+@_execute.register(Return)
+def execute(stmt: Return, env: Environment) -> None:
+    value = evaluate(stmt.expression, env)
+    raise ReturnException(value)
 
 
 @overload

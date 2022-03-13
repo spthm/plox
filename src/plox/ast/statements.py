@@ -38,6 +38,12 @@ class Print:
 
 
 @dataclass(frozen=True)
+class Return:
+    keyword: Token
+    expression: Expr
+
+
+@dataclass(frozen=True)
 class Var:
     name: Token
     initializer: Expr
@@ -49,4 +55,4 @@ class While:
     body: Stmt
 
 
-Stmt = Union[Block, Expression, Function, If, Print, Var, While]
+Stmt = Union[Block, Expression, Function, If, Print, Return, Var, While]
