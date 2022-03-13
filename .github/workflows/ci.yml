@@ -1,0 +1,48 @@
+name: Lint and test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        # 1.1.13. Note that 1.2+ will require the dubious curl -sSL https://install.python-poetry.org | python -
+        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/68649946fe09d52ed1a5844bda6690ba6327c408/get-poetry.py > get-poetry.py
+        echo "e973b3badb95a916bfe250c22eeb7253130fd87312afa326eb02b8bdcea8f4a7  get-poetry.py" > get-poetry.py.sha256
+        sha256sum --check get-poetry.py.sha256
+        python get-poetry.py
+        poetry install
+    - name: Check formatting with black and isort
+      run: |
+        poetry run isort --check --diff src/ tests/
+        poetry run black --check --diff src/ tests/
+    - name: Lint with flake8, pylint and mypy
+      run: |
+        poetry run flake8 --show-source src/ tests/
+        poetry run pylint src/ tests/
+        poetry run mypy src/ tests/
+    - name: Get tox env
+      id: tox_env
+      run: |
+        env=$(echo py${{ matrix.python-version }} | tr -d .)
+        echo "::set-output name=env::$id"
+    - name: Run tests
+      run: |
+        tox -e ${{ steps.tox_env.outputs.env }}
