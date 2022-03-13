@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
@@ -49,7 +49,7 @@ jobs:
         # Need be careful what we pull back from the cache here. The full Python
         # version (including patch) and OS version should match, otherwise we're
         # likely to run into 'bad interpreter' errors.
-        key: venv-ci-${{ runner.os }}-${{ steps.python-version.outputs.version }}-${{ hashFiles('poetry.lock') }}
+        key: venv-ci-${{ matrix.os }}-${{ runner.arch }}-${{ steps.python-version.outputs.version }}-${{ hashFiles('poetry.lock') }}
         path: .venv
 
     - name: Install dependencies
