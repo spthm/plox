@@ -39,11 +39,6 @@ def _truthy(x: object) -> bool:
     return True
 
 
-class OpCheck(Protocol):
-    def __call__(self, *args: object) -> bool:
-        ...
-
-
 def _is_numeric(*args: object) -> bool:
     return all(isinstance(x, float) for x in args)
 
@@ -54,6 +49,11 @@ def _is_string(*args: object) -> bool:
 
 def _is_numeric_or_string(*args: object) -> bool:
     return _is_numeric(*args) or _is_string(*args)
+
+
+class OpCheck(Protocol):
+    def __call__(self, *args: object) -> bool:
+        ...
 
 
 _binary_op_fn = {

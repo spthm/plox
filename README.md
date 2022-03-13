@@ -1,4 +1,5 @@
 # plox
+
 A Python implementation of the Lox language
 
 ## Developer Quickstart
@@ -18,10 +19,11 @@ Run the `plox` CLI,
 poetry run plox
 ```
 
-Before pushing, or opening a PR, run the full set of linters and tests,
+Before pushing or opening a PR run the full set of linters and tests,
 
 ```
-poetry run tox
+make lint
+make test
 ```
 
 To update dependencies,

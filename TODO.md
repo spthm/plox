@@ -52,6 +52,7 @@
 - Require `++` for string concatenation (I think this is a neat idea).
 - Do not return `True` for equality comparison of `NaN` values.
 - Support exponentiation with `**`.
+- Make `print` a native function, not a built-in statement.
 
 ### `Scanner`
 
