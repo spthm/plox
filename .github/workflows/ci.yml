@@ -44,4 +44,4 @@ jobs:
     - name: Run tests
       run: |
         tox_env=$(echo py${{ matrix.python-version }} | tr -d .)
-        tox -e $tox_env
+        poetry run tox -e $tox_env
