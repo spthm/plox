@@ -41,11 +41,7 @@ jobs:
         poetry run flake8 --show-source src/ tests/
         poetry run pylint src/ tests/
         poetry run mypy src/ tests/
-    - name: Get tox env
-      id: tox_env
-      run: |
-        env=$(echo py${{ matrix.python-version }} | tr -d .)
-        echo "::set-output name=env::$id"
     - name: Run tests
       run: |
-        tox -e ${{ steps.tox_env.outputs.env }}
+        tox_env=$(echo py${{ matrix.python-version }} | tr -d .)
+        tox -e $tox_env
