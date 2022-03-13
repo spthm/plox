@@ -23,11 +23,12 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        # 1.1.13. Note that 1.2+ will require the dubious curl -sSL https://install.python-poetry.org | python -
-        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/68649946fe09d52ed1a5844bda6690ba6327c408/get-poetry.py > get-poetry.py
-        echo "e973b3badb95a916bfe250c22eeb7253130fd87312afa326eb02b8bdcea8f4a7  get-poetry.py" > get-poetry.py.sha256
-        sha256sum --check get-poetry.py.sha256
-        python get-poetry.py
+        # 1.1.13. Note that 1.2+ will require the even more dubious curl -sSL https://install.python-poetry.org | python -
+        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/68649946fe09d52ed1a5844bda6690ba6327c408/get-poetry.py > /tmp/get-poetry.py
+        echo "e973b3badb95a916bfe250c22eeb7253130fd87312afa326eb02b8bdcea8f4a7  /tmp/get-poetry.py" > /tmp/get-poetry.py.sha256
+        sha256sum --check /tmp/get-poetry.py.sha256
+        python /tmp/get-poetry.py
+        export PATH="$HOME/.poetry/bin:$PATH"
         poetry install
     - name: Check formatting with black and isort
       run: |
