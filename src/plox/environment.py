@@ -11,6 +11,12 @@ class Environment:
         self._enclosing: Optional[Environment] = enclosing
         self._values: dict[str, object] = {}
 
+    @classmethod
+    def from_globals(cls, dct: dict[str, object]) -> Environment:
+        self = cls()
+        self._values = dict(dct.items())
+        return self
+
     def define(self, name: Token, value: object) -> None:
         self._values[name.lexeme] = value
 
