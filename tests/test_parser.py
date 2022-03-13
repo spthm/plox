@@ -9,7 +9,16 @@ from plox.ast.expressions import (
     Unary,
     Variable,
 )
-from plox.ast.statements import Block, Expression, Function, If, Print, Var, While
+from plox.ast.statements import (
+    Block,
+    Expression,
+    Function,
+    If,
+    Print,
+    Return,
+    Var,
+    While,
+)
 from plox.errors import ParserError
 from plox.parser import Parser
 from plox.tokens import Token, TokenType
@@ -1174,3 +1183,30 @@ def test_function_declaration_missing_parameter(capsys):
 
     _, err = capsys.readouterr()
     assert "[line 1] Error at ')': Expect parameter name." in err
+
+
+def test_return_with_value():
+    ret = Token(TokenType.RETURN, "return", None, 1)
+    value = Token(TokenType.NUMBER, '"1"', 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # return 1;
+    tokens = [ret, value, semicolon, end]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == Return(ret, Literal(1))
+
+
+def test_return_without_value_is_none():
+    ret = Token(TokenType.RETURN, "return", None, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
+    end = Token(TokenType.EOF, "", None, 1)
+
+    # return;
+    tokens = [ret, semicolon, end]
+    statements = Parser(tokens).parse()
+
+    assert len(statements) == 1
+    assert statements[0] == Return(ret, Literal(None))
