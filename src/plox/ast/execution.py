@@ -4,7 +4,7 @@ from typing import Any, overload
 from plox.environment import Environment
 
 from .evaluation import _truthy, evaluate
-from .statements import Block, Expression, If, Print, Stmt, Var, While
+from .statements import Block, Expression, Function, If, Print, Stmt, Var, While
 
 
 def _stringify(value: object) -> str:
@@ -21,6 +21,26 @@ def _stringify(value: object) -> str:
         text = text[:-2]
 
     return text
+
+
+class LoxFunction:
+    def __init__(self, declaration: Function, env: Environment) -> None:
+        self._declaration = declaration
+        self._closure = env
+
+    def arity(self) -> int:
+        return len(self._declaration.parameters)
+
+    def call(self, arguments: list[object]) -> object:
+        env = Environment(self._closure)
+        for (parameter, argument) in zip(self._declaration.parameters, arguments):
+            env.define(parameter, argument)
+
+        execute(self._declaration.body, env)
+        return None
+
+    def __str__(self) -> str:
+        return f"<fn {self._declaration.name.lexeme}>"
 
 
 # mypy's @overload is buggy for @singledispatch. Use of the separate _execute here
@@ -44,6 +64,13 @@ def execute(stmt: Block, env: Environment) -> None:
 @_execute.register(Expression)
 def execute(stmt: Expression, env: Environment) -> None:
     evaluate(stmt.expression, env)
+
+
+@overload
+@_execute.register(Function)
+def execute(stmt: Function, env: Environment) -> None:
+    function = LoxFunction(stmt, env)
+    env.define(stmt.name, function)
 
 
 @overload
