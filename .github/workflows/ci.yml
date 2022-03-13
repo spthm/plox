@@ -23,6 +23,10 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Get Python version
+      id: python-version
+      run: echo ::set-output name=version::$(python --version | tr -d "Python ")
+
     - name: Install poetry
       run: |
         # 1.1.13. Note that 1.2+ will require the even more dubious curl -sSL https://install.python-poetry.org | python -
@@ -33,6 +37,19 @@ jobs:
 
     - name: Update PATH
         echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+
+    - name: Configure poetry
+      run: |
+        poetry config virtualenvs.in-project true
+
+    - name: Cache virtual environment
+      uses: actions/cache@v2
+      with:
+        # Need be careful what we pull back from the cache here. The full Python
+        # version (including patch) and OS version should match, otherwise we're
+        # likely to run into 'bad interpreter' errors.
+        key: venv-ci-${{ runner.os }}-${{ steps.python-version.outputs.version }}-${{ hashFiles('poetry.lock') }}
+        path: .venv
 
     - name: Install dependencies
       run: |
