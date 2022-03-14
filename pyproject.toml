@@ -44,6 +44,19 @@ exclude = '''
 )
 '''
 
+[tool.coverage.run]
+source = ["plox"]
+parallel = true
+
+[tool.coverage.report]
+skip_empty = true
+
+[tool.coverage.paths]
+source = [
+    "src/plox/",
+    ".tox/*/site-packages/plox/"
+]
+
 [tool.isort]
 profile = "black"
 

@@ -7,7 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  tests:
+    name: Lint and test
 
     strategy:
       fail-fast: false
@@ -28,6 +29,11 @@ jobs:
     - name: Get Python version
       id: python-version
       run: echo ::set-output name=version::$(python --version | tr -d "Python ")
+
+    - name: Get Tox env
+      id: tox-env
+      run: |
+        echo ::set-output name=env::$(echo py${{ matrix.python-version }} | tr -d .)
 
     - name: Install poetry
       run: |
@@ -70,6 +76,47 @@ jobs:
         poetry run mypy src/ tests/
 
     - name: Run tests
+      # We only want to *see* test results in this step, not coverage info.
       run: |
-        tox_env=$(echo py${{ matrix.python-version }} | tr -d .)
-        poetry run tox -e $tox_env
+        poetry run tox -e ${{ steps.tox-env.outputs.env }} -- --cov --cov-config=pyproject.toml --cov-report=
+
+    - name: Upload coverage data for Python ${{ matrix.python-version }}
+      uses: actions/upload-artifact@v3
+        with:
+          name: coverage-data
+          path: ".coverage.${{ steps.tox-env.outputs.env }}"
+
+  coverage:
+    name: Produce coverage report
+
+    needs: tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+        # Get our .coveragerc file.
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - run: python -m pip install coverage[toml]
+
+      - name: Download all coverage data
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-data
+
+      - name: Combine coverage reports
+        run: |
+          python -m coverage combine
+          python -m coverage html
+          python -m coverage report
+
+      - name: Upload coverage HTML report
+        uses: actions/upload-artifact@v2
+        with:
+          name: html-report
+          path: htmlcov
