@@ -82,9 +82,9 @@ jobs:
 
     - name: Upload coverage data for Python ${{ matrix.python-version }}
       uses: actions/upload-artifact@v3
-        with:
-          name: coverage-data
-          path: ".coverage.${{ steps.tox-env.outputs.env }}"
+      with:
+        name: coverage-data
+        path: ".coverage.${{ steps.tox-env.outputs.env }}"
 
   coverage:
     name: Produce coverage report
