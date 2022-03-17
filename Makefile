@@ -11,7 +11,14 @@ lint:
 
 .PHONY: test
 test:
-	poetry run tox
+	poetry run tox -q --skip-missing-interpreters=true
+
+.PHONY: coverage
+coverage:
+	-poetry run tox -q --skip-missing-interpreters=true -- -q --cov --cov-config=pyproject.toml --cov-report=
+	poetry run tox -q -e coverage -- combine
+	poetry run tox -q -e coverage -- html
+	poetry run tox -q -e coverage -- report
 
 .PHONY: update
 update:
