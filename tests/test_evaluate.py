@@ -55,7 +55,7 @@ def test_assignment_undefined_variable():
     expr = Assign(id_a, literal_a)
 
     with pytest.raises(ExecutionError, match="Undefined variable 'a'"):
-        assert evaluate(expr, env) == literal_a.value
+        evaluate(expr, env)
 
 
 def test_unary_neg_string_error():
