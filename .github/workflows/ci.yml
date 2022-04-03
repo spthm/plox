@@ -21,44 +21,19 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Install poetry
+      run: pipx install poetry==1.1.13
+
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3.1.0
       with:
         python-version: ${{ matrix.python-version }}
-
-    - name: Get Python version
-      id: python-version
-      run: |
-        echo ::set-output name=version::$(python --version | tr -d "Python ")
+        cache: "poetry"
 
     - name: Get Tox env
       id: tox-env
       run: |
         echo ::set-output name=env::$(echo py${{ matrix.python-version }} | tr -d .)
-
-    - name: Install poetry
-      run: |
-        # 1.1.13. Note that 1.2+ will require the even more dubious curl -sSL https://install.python-poetry.org | python -
-        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/68649946fe09d52ed1a5844bda6690ba6327c408/get-poetry.py > /tmp/get-poetry.py
-        echo "e973b3badb95a916bfe250c22eeb7253130fd87312afa326eb02b8bdcea8f4a7  /tmp/get-poetry.py" | sha256sum --check
-        python /tmp/get-poetry.py
-
-    - name: Add poetry to PATH
-      run: |
-        echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-
-    - name: Configure poetry
-      run: |
-        poetry config virtualenvs.in-project true
-
-    - name: Cache virtual environment
-      uses: actions/cache@v3.0.1
-      with:
-        # Need be careful what we pull back from the cache here. The full Python
-        # version (including patch) and OS version should match, otherwise we're
-        # likely to run into 'bad interpreter' errors.
-        key: venv-ci-${{ matrix.os }}-${{ runner.arch }}-${{ steps.python-version.outputs.version }}-${{ hashFiles('poetry.lock') }}
-        path: .venv
 
     - name: Cache mypy cache
       uses: actions/cache@v3.0.1
@@ -69,7 +44,11 @@ jobs:
         path: .mypy_cache
 
     - name: Install dependencies
+      # poetry uses the default Python version (3.8); we need to point it to
+      # the correct executable. See also actions/setup-python issue #374,
+      # although this seems like a poetry bug.
       run: |
+        poetry env use ${{ matrix.python-version }}
         poetry install
 
     - name: Check formatting with black and isort
@@ -105,7 +84,7 @@ jobs:
         # Get our coverage configuration file (pyproject.toml).
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v3.1.0
         with:
           python-version: "3.10"
 
