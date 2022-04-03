@@ -56,3 +56,18 @@ def test_assignment_undefined_variable():
 
     with pytest.raises(ExecutionError, match="Undefined variable 'a'"):
         assert evaluate(expr, env) == literal_a.value
+
+
+def test_unary_neg_string_error():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/operator/negate_nonnum.lox
+    neg = Token(TokenType.MINUS, "-", None, 1)
+    literal_a = Literal("a")
+
+    # -"a";
+    env = Environment()
+    expr = Unary(neg, literal_a)
+
+    with pytest.raises(
+        ExecutionError, match="Unsupported operand for '-', must be 'number'"
+    ):
+        evaluate(expr, env)
