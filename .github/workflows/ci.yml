@@ -25,11 +25,7 @@ jobs:
       uses: actions/setup-python@v3.1.0
       with:
         python-version: ${{ matrix.python-version }}
-
-    - name: Get Python version
-      id: python-version
-      run: |
-        echo ::set-output name=version::$(python --version | tr -d "Python ")
+        cache: "poetry"
 
     - name: Get Tox env
       id: tox-env
@@ -46,19 +42,6 @@ jobs:
     - name: Add poetry to PATH
       run: |
         echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-
-    - name: Configure poetry
-      run: |
-        poetry config virtualenvs.in-project true
-
-    - name: Cache virtual environment
-      uses: actions/cache@v3.0.1
-      with:
-        # Need be careful what we pull back from the cache here. The full Python
-        # version (including patch) and OS version should match, otherwise we're
-        # likely to run into 'bad interpreter' errors.
-        key: venv-ci-${{ matrix.os }}-${{ runner.arch }}-${{ steps.python-version.outputs.version }}-${{ hashFiles('poetry.lock') }}
-        path: .venv
 
     - name: Cache mypy cache
       uses: actions/cache@v3.0.1
