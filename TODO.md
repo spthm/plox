@@ -22,6 +22,10 @@
 
 - Remove this, or instead add a `__str__` method for each statement and expression class.
 
+### `ast.evaluation`
+
+- Implement the values of `_binary_op_fn` as done for `_unary_op_fn`; that is, functions with signatures `f(object, object) -> object` that `raise TypeError` for unsupported inputs. This allows `mypy` to do a better job type-checking `evaluate(expr: Binary, ...)` (cf. `evaluate(expr: Unary, ...)`).
+
 ## Challenges
 
 ### 6: Parsing Expressions

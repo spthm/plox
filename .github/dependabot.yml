@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    reviewers:
+      - "spthm"
+    schedule:
+      interval: "daily"
+      time: "18:00"
+      timezone: "Europe/London"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    reviewers:
+      - "spthm"
+    schedule:
+      interval: "monthly"

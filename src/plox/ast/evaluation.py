@@ -33,6 +33,12 @@ def _unary_op_error(op: Token) -> str:
     return f"Unsupported operand for '{op.lexeme}', must be 'number'."
 
 
+def _neg(x: object) -> object:
+    if isinstance(x, float):
+        return neg(x)
+    raise TypeError
+
+
 def _truthy(x: object) -> bool:
     if x is None or x is False:
         return False
@@ -82,11 +88,7 @@ _binary_op_check: dict[TokenType, OpCheck] = {
 
 _unary_op_fn = {
     TokenType.BANG: lambda x: not _truthy(x),
-    TokenType.MINUS: neg,
-}
-
-_unary_op_check = {
-    TokenType.MINUS: _is_numeric,
+    TokenType.MINUS: _neg,
 }
 
 
@@ -187,18 +189,17 @@ def evaluate(expr: Logical, env: Environment) -> object:
 def evaluate(expr: Unary, env: Environment) -> object:
     right = evaluate(expr.right, env)
 
-    check = _unary_op_check.get(expr.operator.kind, None)
-    if check is not None and not check(right):
-        msg = _unary_op_error(expr.operator)
-        raise ExecutionError(msg, expr.operator)
-
     try:
         op = _unary_op_fn[expr.operator.kind]
     except KeyError as e:
         # This is an internal error.
         raise RuntimeError(f"unexpected Unary operator: {expr.operator.kind}") from e
 
-    return op(right)
+    try:
+        return op(right)
+    except TypeError:
+        msg = _unary_op_error(expr.operator)
+        raise ExecutionError(msg, expr.operator) from None
 
 
 @overload

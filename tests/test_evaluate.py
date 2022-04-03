@@ -55,4 +55,55 @@ def test_assignment_undefined_variable():
     expr = Assign(id_a, literal_a)
 
     with pytest.raises(ExecutionError, match="Undefined variable 'a'"):
-        assert evaluate(expr, env) == literal_a.value
+        evaluate(expr, env)
+
+
+@pytest.mark.parametrize("value", [False, None])
+def test_unary_bang_falsey_literals(value):
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/operator/not.lox
+    bang = Token(TokenType.BANG, "1", None, 1)
+    literal = Literal(value)
+
+    env = Environment()
+    expr = Unary(bang, literal)
+
+    assert evaluate(expr, env) is True
+
+
+@pytest.mark.parametrize("value", [True, 0, 123, ""])
+def test_unary_bang_truthy_literals(value):
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/operator/not.lox
+    bang = Token(TokenType.BANG, "1", None, 1)
+    literal = Literal(value)
+
+    env = Environment()
+    expr = Unary(bang, literal)
+
+    assert evaluate(expr, env) is False
+
+
+def test_unary_double_bang():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/operator/not.lox
+    bang = Token(TokenType.BANG, "1", None, 1)
+    true = Literal(True)
+
+    # !!true;
+    env = Environment()
+    expr = Unary(bang, Unary(bang, true))
+
+    assert evaluate(expr, env) is True
+
+
+def test_unary_neg_string_error():
+    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/operator/negate_nonnum.lox
+    neg = Token(TokenType.MINUS, "-", None, 1)
+    literal_a = Literal("a")
+
+    # -"a";
+    env = Environment()
+    expr = Unary(neg, literal_a)
+
+    with pytest.raises(
+        ExecutionError, match="Unsupported operand for '-', must be 'number'"
+    ):
+        evaluate(expr, env)
