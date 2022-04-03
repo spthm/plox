@@ -21,6 +21,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Install poetry
+      run: pipx install poetry==1.1.13
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3.1.0
       with:
@@ -31,17 +34,6 @@ jobs:
       id: tox-env
       run: |
         echo ::set-output name=env::$(echo py${{ matrix.python-version }} | tr -d .)
-
-    - name: Install poetry
-      run: |
-        # 1.1.13. Note that 1.2+ will require the even more dubious curl -sSL https://install.python-poetry.org | python -
-        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/68649946fe09d52ed1a5844bda6690ba6327c408/get-poetry.py > /tmp/get-poetry.py
-        echo "e973b3badb95a916bfe250c22eeb7253130fd87312afa326eb02b8bdcea8f4a7  /tmp/get-poetry.py" | sha256sum --check
-        python /tmp/get-poetry.py
-
-    - name: Add poetry to PATH
-      run: |
-        echo "$HOME/.poetry/bin" >> $GITHUB_PATH
 
     - name: Cache mypy cache
       uses: actions/cache@v3.0.1
