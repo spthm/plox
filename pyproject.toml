@@ -10,7 +10,7 @@ python = "^3.9"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"
-pre-commit = "^2.14.0"
+pre-commit = "^2.18.1"
 flake8 = "^4.0.0"
 pep8-naming = "^0.12.1"
 tox = "^3.24.3"
