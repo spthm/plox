@@ -2,8 +2,6 @@ version: 2
 updates:
   - package-ecosystem: "pip"
     directory: "/"
-    reviewers:
-      - "spthm"
     schedule:
       interval: "daily"
       time: "18:00"
@@ -11,7 +9,5 @@ updates:
 
   - package-ecosystem: "github-actions"
     directory: "/"
-    reviewers:
-      - "spthm"
     schedule:
       interval: "monthly"
