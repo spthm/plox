@@ -17,7 +17,7 @@ tox = "^3.25.0"
 isort = "^5.9.3"
 mypy = "^0.942"
 pylint = "^2.13.7"
-pytest = "^7.1.1"
+pytest = "^7.1.2"
 
 [tool.poetry.scripts]
 plox = "plox.cli:main"
