@@ -36,7 +36,7 @@ jobs:
         echo ::set-output name=env::$(echo py${{ matrix.python-version }} | tr -d .)
 
     - name: Cache mypy cache
-      uses: actions/cache@v3.0.1
+      uses: actions/cache@v3.0.2
       with:
         # Don't need to be so careful here,
         #   https://github.com/python/mypy/issues/10221#issuecomment-801330908
