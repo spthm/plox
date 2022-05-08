@@ -105,7 +105,7 @@ def _evaluate(expr: Any, _: Environment) -> object:
 @_evaluate.register(Assign)
 def evaluate(expr: Assign, env: Environment) -> object:
     value = evaluate(expr.value, env)
-    env[expr.name] = value
+    env[expr] = value
     return value
 
 
@@ -205,7 +205,7 @@ def evaluate(expr: Unary, env: Environment) -> object:
 @overload
 @_evaluate.register(Variable)
 def evaluate(expr: Variable, env: Environment) -> object:
-    return env[expr.name]
+    return env[expr]
 
 
 def evaluate(expr: Expr, env: Environment) -> object:

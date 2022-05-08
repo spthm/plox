@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Optional
 
+# avoid circular dependencies by specifying the specific modules of ast.
+from plox.ast.expressions import Assign, Variable
 from plox.errors import ExecutionError
 from plox.tokens import Token
 
@@ -20,24 +22,24 @@ class Environment:
     def define(self, name: Token, value: object) -> None:
         self._values[name.lexeme] = value
 
-    def __getitem__(self, name: Token) -> object:
+    def __getitem__(self, expr: Variable) -> object:
         try:
-            return self._values[name.lexeme]
+            return self._values[expr.name.lexeme]
         except KeyError:
             pass
 
         if self._enclosing is not None:
-            return self._enclosing[name]
+            return self._enclosing[expr]
 
-        raise ExecutionError(f"Undefined variable '{name.lexeme}'.", name)
+        raise ExecutionError(f"Undefined variable '{expr.name.lexeme}'.", expr.name)
 
-    def __setitem__(self, name: Token, value: object) -> None:
-        if name.lexeme in self._values:
-            self._values[name.lexeme] = value
+    def __setitem__(self, expr: Assign, value: object) -> None:
+        if expr.name.lexeme in self._values:
+            self._values[expr.name.lexeme] = value
             return
 
         if self._enclosing is not None:
-            self._enclosing[name] = value
+            self._enclosing[expr] = value
             return
 
-        raise ExecutionError(f"Undefined variable '{name.lexeme}'.", name)
+        raise ExecutionError(f"Undefined variable '{expr.name.lexeme}'.", expr.name)
