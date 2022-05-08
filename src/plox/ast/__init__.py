@@ -12,11 +12,14 @@ from .expressions import (
     Variable,
 )
 from .printer import ast_str
+from .resolve import Bindable, Bindings, resolve_statements
 from .statements import Block, Expression, Function, If, Print, Return, Stmt, Var, While
 
 __all__ = [
     # .evaluation
     "evaluate",
+    # .execution
+    "execute",
     # .expressions
     "Assign",
     "Binary",
@@ -28,10 +31,12 @@ __all__ = [
     "Logical",
     "Unary",
     "Variable",
-    # .execution
-    "execute",
     # .printer
     "ast_str",
+    # .resolve
+    "Bindable",
+    "Bindings",
+    "resolve_statements",
     # .statements
     "Block",
     "Expression",
