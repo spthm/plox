@@ -10,8 +10,8 @@ from plox.tokens import Token, TokenType
 def test_evaluate():
     # Test case from
     #  https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/expressions/evaluate.lox
-    minus = Token(TokenType.MINUS, "-", None, 1)
-    plus = Token(TokenType.PLUS, "+", None, 1)
+    minus = Token(TokenType.MINUS, "-", None, 1, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1, 1)
 
     # (5 - (3 - 1)) + -1
     expr = \
@@ -33,7 +33,7 @@ def test_evaluate():
 
 def test_assignment():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/assignment/grouping.lox
-    id_a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    id_a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
     literal_a = Literal("a")
 
     # a = "a";
@@ -48,7 +48,7 @@ def test_assignment():
 
 def test_assignment_undefined_variable():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/assignment/undefined.lox
-    id_a = Token(TokenType.IDENTIFIER, "a", None, 1)
+    id_a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
     literal_a = Literal("a")
 
     # a = "a";
@@ -63,7 +63,7 @@ def test_assignment_undefined_variable():
 @pytest.mark.parametrize("value", [False, None])
 def test_unary_bang_falsey_literals(value):
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/operator/not.lox
-    bang = Token(TokenType.BANG, "1", None, 1)
+    bang = Token(TokenType.BANG, "1", None, 1, 1)
     literal = Literal(value)
 
     env = Environment()
@@ -75,7 +75,7 @@ def test_unary_bang_falsey_literals(value):
 @pytest.mark.parametrize("value", [True, 0, 123, ""])
 def test_unary_bang_truthy_literals(value):
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/operator/not.lox
-    bang = Token(TokenType.BANG, "1", None, 1)
+    bang = Token(TokenType.BANG, "1", None, 1, 1)
     literal = Literal(value)
 
     env = Environment()
@@ -86,7 +86,7 @@ def test_unary_bang_truthy_literals(value):
 
 def test_unary_double_bang():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/operator/not.lox
-    bang = Token(TokenType.BANG, "1", None, 1)
+    bang = Token(TokenType.BANG, "1", None, 1, 1)
     true = Literal(True)
 
     # !!true;
@@ -98,7 +98,7 @@ def test_unary_double_bang():
 
 def test_unary_neg_string_error():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/operator/negate_nonnum.lox
-    neg = Token(TokenType.MINUS, "-", None, 1)
+    neg = Token(TokenType.MINUS, "-", None, 1, 1)
     literal_a = Literal("a")
 
     # -"a";

@@ -16,20 +16,21 @@ def test_identifiers():
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
-        Token(TokenType.IDENTIFIER, "andy", None, 2),
-        Token(TokenType.IDENTIFIER, "formless", None, 2),
-        Token(TokenType.IDENTIFIER, "fo", None, 2),
-        Token(TokenType.IDENTIFIER, "_", None, 2),
-        Token(TokenType.IDENTIFIER, "_123", None, 2),
-        Token(TokenType.IDENTIFIER, "_abc", None, 2),
-        Token(TokenType.IDENTIFIER, "ab123", None, 2),
+        Token(TokenType.IDENTIFIER, "andy", None, 2, 1),
+        Token(TokenType.IDENTIFIER, "formless", None, 2, 6),
+        Token(TokenType.IDENTIFIER, "fo", None, 2, 15),
+        Token(TokenType.IDENTIFIER, "_", None, 2, 18),
+        Token(TokenType.IDENTIFIER, "_123", None, 2, 20),
+        Token(TokenType.IDENTIFIER, "_abc", None, 2, 25),
+        Token(TokenType.IDENTIFIER, "ab123", None, 2, 30),
         Token(
             TokenType.IDENTIFIER,
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_",
             None,
             3,
+            1,
         ),
-        Token(TokenType.EOF, "", None, 4),
+        Token(TokenType.EOF, "", None, 4, 1),
     ]
 
 
@@ -39,22 +40,22 @@ def test_keywords():
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
-        Token(TokenType.AND, "and", None, 1),
-        Token(TokenType.CLASS, "class", None, 1),
-        Token(TokenType.ELSE, "else", None, 1),
-        Token(TokenType.FALSE, "false", None, 1),
-        Token(TokenType.FOR, "for", None, 1),
-        Token(TokenType.FUN, "fun", None, 1),
-        Token(TokenType.IF, "if", None, 1),
-        Token(TokenType.NIL, "nil", None, 1),
-        Token(TokenType.OR, "or", None, 1),
-        Token(TokenType.RETURN, "return", None, 1),
-        Token(TokenType.SUPER, "super", None, 1),
-        Token(TokenType.THIS, "this", None, 1),
-        Token(TokenType.TRUE, "true", None, 1),
-        Token(TokenType.VAR, "var", None, 1),
-        Token(TokenType.WHILE, "while", None, 1),
-        Token(TokenType.EOF, "", None, 1),
+        Token(TokenType.AND, "and", None, 1, 1),
+        Token(TokenType.CLASS, "class", None, 1, 5),
+        Token(TokenType.ELSE, "else", None, 1, 11),
+        Token(TokenType.FALSE, "false", None, 1, 16),
+        Token(TokenType.FOR, "for", None, 1, 22),
+        Token(TokenType.FUN, "fun", None, 1, 26),
+        Token(TokenType.IF, "if", None, 1, 30),
+        Token(TokenType.NIL, "nil", None, 1, 33),
+        Token(TokenType.OR, "or", None, 1, 37),
+        Token(TokenType.RETURN, "return", None, 1, 40),
+        Token(TokenType.SUPER, "super", None, 1, 47),
+        Token(TokenType.THIS, "this", None, 1, 53),
+        Token(TokenType.TRUE, "true", None, 1, 58),
+        Token(TokenType.VAR, "var", None, 1, 63),
+        Token(TokenType.WHILE, "while", None, 1, 67),
+        Token(TokenType.EOF, "", None, 1, 72),
     ]
 
 
@@ -69,13 +70,13 @@ def test_numbers():
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
-        Token(TokenType.NUMBER, "123", 123.0, 2),
-        Token(TokenType.NUMBER, "123.456", 123.456, 3),
-        Token(TokenType.DOT, ".", None, 4),
-        Token(TokenType.NUMBER, "456", 456.0, 4),
-        Token(TokenType.NUMBER, "123", 123.0, 5),
-        Token(TokenType.DOT, ".", None, 5),
-        Token(TokenType.EOF, "", None, 6),
+        Token(TokenType.NUMBER, "123", 123.0, 2, 1),
+        Token(TokenType.NUMBER, "123.456", 123.456, 3, 1),
+        Token(TokenType.DOT, ".", None, 4, 1),
+        Token(TokenType.NUMBER, "456", 456.0, 4, 2),
+        Token(TokenType.NUMBER, "123", 123.0, 5, 1),
+        Token(TokenType.DOT, ".", None, 5, 4),
+        Token(TokenType.EOF, "", None, 6, 1),
     ]
 
 
@@ -85,25 +86,25 @@ def test_punctuators():
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
-        Token(TokenType.LEFT_PAREN, "(", None, 1),
-        Token(TokenType.RIGHT_PAREN, ")", None, 1),
-        Token(TokenType.LEFT_BRACE, "{", None, 1),
-        Token(TokenType.RIGHT_BRACE, "}", None, 1),
-        Token(TokenType.SEMICOLON, ";", None, 1),
-        Token(TokenType.COMMA, ",", None, 1),
-        Token(TokenType.PLUS, "+", None, 1),
-        Token(TokenType.MINUS, "-", None, 1),
-        Token(TokenType.STAR, "*", None, 1),
-        Token(TokenType.BANG_EQUAL, "!=", None, 1),
-        Token(TokenType.EQUAL_EQUAL, "==", None, 1),
-        Token(TokenType.LESS_EQUAL, "<=", None, 1),
-        Token(TokenType.GREATER_EQUAL, ">=", None, 1),
-        Token(TokenType.BANG_EQUAL, "!=", None, 1),
-        Token(TokenType.LESS, "<", None, 1),
-        Token(TokenType.GREATER, ">", None, 1),
-        Token(TokenType.SLASH, "/", None, 1),
-        Token(TokenType.DOT, ".", None, 1),
-        Token(TokenType.EOF, "", None, 1),
+        Token(TokenType.LEFT_PAREN, "(", None, 1, 1),
+        Token(TokenType.RIGHT_PAREN, ")", None, 1, 2),
+        Token(TokenType.LEFT_BRACE, "{", None, 1, 3),
+        Token(TokenType.RIGHT_BRACE, "}", None, 1, 4),
+        Token(TokenType.SEMICOLON, ";", None, 1, 5),
+        Token(TokenType.COMMA, ",", None, 1, 6),
+        Token(TokenType.PLUS, "+", None, 1, 7),
+        Token(TokenType.MINUS, "-", None, 1, 8),
+        Token(TokenType.STAR, "*", None, 1, 9),
+        Token(TokenType.BANG_EQUAL, "!=", None, 1, 10),
+        Token(TokenType.EQUAL_EQUAL, "==", None, 1, 12),
+        Token(TokenType.LESS_EQUAL, "<=", None, 1, 14),
+        Token(TokenType.GREATER_EQUAL, ">=", None, 1, 16),
+        Token(TokenType.BANG_EQUAL, "!=", None, 1, 18),
+        Token(TokenType.LESS, "<", None, 1, 20),
+        Token(TokenType.GREATER, ">", None, 1, 21),
+        Token(TokenType.SLASH, "/", None, 1, 22),
+        Token(TokenType.DOT, ".", None, 1, 23),
+        Token(TokenType.EOF, "", None, 1, 24),
     ]
 
 
@@ -117,9 +118,9 @@ def test_strings():
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
-        Token(TokenType.STRING, '""', "", 2),
-        Token(TokenType.STRING, '"string"', "string", 3),
-        Token(TokenType.EOF, "", None, 5),
+        Token(TokenType.STRING, '""', "", 2, 1),
+        Token(TokenType.STRING, '"string"', "string", 3, 1),
+        Token(TokenType.EOF, "", None, 5, 1),
     ]
 
 
@@ -147,11 +148,11 @@ def test_whitespace():
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
-        Token(TokenType.IDENTIFIER, "space", None, 2),
-        Token(TokenType.IDENTIFIER, "tabs", None, 2),
-        Token(TokenType.IDENTIFIER, "newlines", None, 2),
-        Token(TokenType.IDENTIFIER, "end", None, 7),
-        Token(TokenType.EOF, "", None, 8),
+        Token(TokenType.IDENTIFIER, "space", None, 2, 1),
+        Token(TokenType.IDENTIFIER, "tabs", None, 2, 10),
+        Token(TokenType.IDENTIFIER, "newlines", None, 2, 18),
+        Token(TokenType.IDENTIFIER, "end", None, 7, 1),
+        Token(TokenType.EOF, "", None, 8, 1),
     ]
 
 
@@ -164,10 +165,10 @@ def test_comments_ignored():
     t = Scanner(dedent(src)).scan_tokens()
 
     assert t == [
-        Token(TokenType.PRINT, "print", None, 2),
-        Token(TokenType.STRING, '"ok"', "ok", 2),
-        Token(TokenType.SEMICOLON, ";", None, 2),
-        Token(TokenType.EOF, "", None, 4),
+        Token(TokenType.PRINT, "print", None, 2, 1),
+        Token(TokenType.STRING, '"ok"', "ok", 2, 7),
+        Token(TokenType.SEMICOLON, ";", None, 2, 11),
+        Token(TokenType.EOF, "", None, 4, 1),
     ]
 
 
@@ -176,7 +177,7 @@ def test_only_comment():
     src = "// comment"
     t = Scanner(dedent(src)).scan_tokens()
 
-    assert t == [Token(TokenType.EOF, "", None, 1)]
+    assert t == [Token(TokenType.EOF, "", None, 1, 11)]
 
 
 def test_only_comment_and_newline():
@@ -184,7 +185,7 @@ def test_only_comment_and_newline():
     src = "// comment\n"
     t = Scanner(dedent(src)).scan_tokens()
 
-    assert t == [Token(TokenType.EOF, "", None, 2)]
+    assert t == [Token(TokenType.EOF, "", None, 2, 1)]
 
 
 def test_unicode_in_comments():
@@ -200,4 +201,4 @@ def test_unicode_in_comments():
     """
     t = Scanner(dedent(src)).scan_tokens()
 
-    assert t == [Token(TokenType.EOF, "", None, 9)]
+    assert t == [Token(TokenType.EOF, "", None, 9, 1)]

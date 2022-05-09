@@ -61,6 +61,7 @@ class Token:
     lexeme: str
     literal: object
     lno: int
+    col: int
 
     def __str__(self) -> str:
         return f"{self.kind} {self.lexeme} {self.literal}"

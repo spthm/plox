@@ -8,7 +8,7 @@ from plox.tokens import Token, TokenType
 
 
 def test_zero_div_zero_is_nan():
-    slash = Token(TokenType.SLASH, "/", None, 1)
+    slash = Token(TokenType.SLASH, "/", None, 1, 1)
     expr = Binary(Literal(0.0), slash, Literal(0.0))
 
     v = evaluate(expr, Environment())
@@ -17,28 +17,28 @@ def test_zero_div_zero_is_nan():
 
 
 def test_nan_eq_nan_false():
-    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1)
+    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1, 1)
     expr = Binary(Literal(float("nan")), equal, Literal(float("nan")))
 
     assert evaluate(expr, Environment()) is False
 
 
 def test_nan_eq_zero_false():
-    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1)
+    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1, 1)
     expr = Binary(Literal(float("nan")), equal, Literal(0.0))
 
     assert evaluate(expr, Environment()) is False
 
 
 def test_nan_neq_nan_true():
-    n_equal = Token(TokenType.BANG_EQUAL, "!=", None, 1)
+    n_equal = Token(TokenType.BANG_EQUAL, "!=", None, 1, 1)
     expr = Binary(Literal(float("nan")), n_equal, Literal(float("nan")))
 
     assert evaluate(expr, Environment()) is True
 
 
 def test_nan_neq_zero_true():
-    n_equal = Token(TokenType.BANG_EQUAL, "!=", None, 1)
+    n_equal = Token(TokenType.BANG_EQUAL, "!=", None, 1, 1)
     expr = Binary(Literal(float("nan")), n_equal, Literal(0.0))
 
     assert evaluate(expr, Environment()) is True

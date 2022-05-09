@@ -11,9 +11,9 @@ def test_literal_float():
 
 
 def test_binry_unary_grouping_literal():
-    minus = Token(TokenType.MINUS, "-", None, 1)
+    minus = Token(TokenType.MINUS, "-", None, 1, 1)
     lhs = Unary(minus, Literal(123))
-    op = Token(TokenType.STAR, "*", None, 1)
+    op = Token(TokenType.STAR, "*", None, 1, 1)
     rhs = Grouping(Literal(45.67))
 
     expr = Binary(lhs, op, rhs)

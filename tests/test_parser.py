@@ -32,15 +32,15 @@ from plox.tokens import Token, TokenType
 def test_parse_grouping():
     # Test case from
     #  https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/expressions/parse.lox
-    minus = Token(TokenType.MINUS, "-", None, 1)
-    plus = Token(TokenType.PLUS, "+", None, 1)
-    one = Token(TokenType.NUMBER, "1", 1, 1)
-    three = Token(TokenType.NUMBER, "3", 3, 1)
-    five = Token(TokenType.NUMBER, "5", 5, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    minus = Token(TokenType.MINUS, "-", None, 1, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1, 1)
+    three = Token(TokenType.NUMBER, "3", 3, 1, 1)
+    five = Token(TokenType.NUMBER, "5", 5, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # (5 - (3 - 1)) + -1
     tokens = [
@@ -83,18 +83,18 @@ def test_parse_grouping():
 
 
 def test_parse_precedence_plus_star():
-    plus = Token(TokenType.PLUS, "+", None, 1)
-    star = Token(TokenType.STAR, "*", None, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1, 1)
+    star = Token(TokenType.STAR, "*", None, 1, 1)
 
     # 2 + 3 * 4
     tokens = [
-        Token(TokenType.NUMBER, "2", 2, 1),
+        Token(TokenType.NUMBER, "2", 2, 1, 1),
         plus,
-        Token(TokenType.NUMBER, "3", 3, 1),
+        Token(TokenType.NUMBER, "3", 3, 1, 1),
         star,
-        Token(TokenType.NUMBER, "4", 4, 1),
-        Token(TokenType.SEMICOLON, ";", None, 1),
-        Token(TokenType.EOF, "", None, 1),
+        Token(TokenType.NUMBER, "4", 4, 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1, 1),
+        Token(TokenType.EOF, "", None, 1, 1),
     ]
     statements = Parser(tokens).parse()
 
@@ -105,18 +105,18 @@ def test_parse_precedence_plus_star():
 
 
 def test_parse_precedence_minus_star():
-    minus = Token(TokenType.MINUS, "-", None, 1)
-    star = Token(TokenType.STAR, "*", None, 1)
+    minus = Token(TokenType.MINUS, "-", None, 1, 1)
+    star = Token(TokenType.STAR, "*", None, 1, 1)
 
     # 2 - 3 * 4
     tokens = [
-        Token(TokenType.NUMBER, "2", 2, 1),
+        Token(TokenType.NUMBER, "2", 2, 1, 1),
         minus,
-        Token(TokenType.NUMBER, "3", 3, 1),
+        Token(TokenType.NUMBER, "3", 3, 1, 1),
         star,
-        Token(TokenType.NUMBER, "4", 4, 1),
-        Token(TokenType.SEMICOLON, ";", None, 1),
-        Token(TokenType.EOF, "", None, 1),
+        Token(TokenType.NUMBER, "4", 4, 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1, 1),
+        Token(TokenType.EOF, "", None, 1, 1),
     ]
     statements = Parser(tokens).parse()
 
@@ -127,18 +127,18 @@ def test_parse_precedence_minus_star():
 
 
 def test_parse_precedence_plus_slash():
-    plus = Token(TokenType.PLUS, "+", None, 1)
-    slash = Token(TokenType.STAR, "/", None, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1, 1)
+    slash = Token(TokenType.STAR, "/", None, 1, 1)
 
     # 2 + 3 / 4
     tokens = [
-        Token(TokenType.NUMBER, "2", 2, 1),
+        Token(TokenType.NUMBER, "2", 2, 1, 1),
         plus,
-        Token(TokenType.NUMBER, "3", 3, 1),
+        Token(TokenType.NUMBER, "3", 3, 1, 1),
         slash,
-        Token(TokenType.NUMBER, "4", 4, 1),
-        Token(TokenType.SEMICOLON, ";", None, 1),
-        Token(TokenType.EOF, "", None, 1),
+        Token(TokenType.NUMBER, "4", 4, 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1, 1),
+        Token(TokenType.EOF, "", None, 1, 1),
     ]
     statements = Parser(tokens).parse()
 
@@ -149,18 +149,18 @@ def test_parse_precedence_plus_slash():
 
 
 def test_parse_precedence_minus_slash():
-    minus = Token(TokenType.MINUS, "+", None, 1)
-    slash = Token(TokenType.STAR, "/", None, 1)
+    minus = Token(TokenType.MINUS, "+", None, 1, 1)
+    slash = Token(TokenType.STAR, "/", None, 1, 1)
 
     # 2 - 3 / 4
     tokens = [
-        Token(TokenType.NUMBER, "2", 2, 1),
+        Token(TokenType.NUMBER, "2", 2, 1, 1),
         minus,
-        Token(TokenType.NUMBER, "3", 3, 1),
+        Token(TokenType.NUMBER, "3", 3, 1, 1),
         slash,
-        Token(TokenType.NUMBER, "4", 4, 1),
-        Token(TokenType.SEMICOLON, ";", None, 1),
-        Token(TokenType.EOF, "", None, 1),
+        Token(TokenType.NUMBER, "4", 4, 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1, 1),
+        Token(TokenType.EOF, "", None, 1, 1),
     ]
     statements = Parser(tokens).parse()
 
@@ -171,18 +171,18 @@ def test_parse_precedence_minus_slash():
 
 
 def test_parse_precedence_equalequal_lt():
-    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1)
-    lt = Token(TokenType.LESS, "<", None, 1)
+    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1, 1)
+    lt = Token(TokenType.LESS, "<", None, 1, 1)
 
     # false == 2 < 1
     tokens = [
-        Token(TokenType.FALSE, "false", False, 1),
+        Token(TokenType.FALSE, "false", False, 1, 1),
         equal,
-        Token(TokenType.NUMBER, "2", 2, 1),
+        Token(TokenType.NUMBER, "2", 2, 1, 1),
         lt,
-        Token(TokenType.NUMBER, "1", 1, 1),
-        Token(TokenType.SEMICOLON, ";", None, 1),
-        Token(TokenType.EOF, "", None, 1),
+        Token(TokenType.NUMBER, "1", 1, 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1, 1),
+        Token(TokenType.EOF, "", None, 1, 1),
     ]
     statements = Parser(tokens).parse()
 
@@ -193,18 +193,18 @@ def test_parse_precedence_equalequal_lt():
 
 
 def test_parse_precedence_equalequal_lte():
-    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1)
-    lte = Token(TokenType.LESS_EQUAL, "<=", None, 1)
+    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1, 1)
+    lte = Token(TokenType.LESS_EQUAL, "<=", None, 1, 1)
 
     # false == 2 < 1
     tokens = [
-        Token(TokenType.FALSE, "false", False, 1),
+        Token(TokenType.FALSE, "false", False, 1, 1),
         equal,
-        Token(TokenType.NUMBER, "2", 2, 1),
+        Token(TokenType.NUMBER, "2", 2, 1, 1),
         lte,
-        Token(TokenType.NUMBER, "1", 1, 1),
-        Token(TokenType.SEMICOLON, ";", None, 1),
-        Token(TokenType.EOF, "", None, 1),
+        Token(TokenType.NUMBER, "1", 1, 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1, 1),
+        Token(TokenType.EOF, "", None, 1, 1),
     ]
     statements = Parser(tokens).parse()
 
@@ -215,18 +215,18 @@ def test_parse_precedence_equalequal_lte():
 
 
 def test_parse_precedence_equalequal_gt():
-    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1)
-    gt = Token(TokenType.GREATER, ">", None, 1)
+    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1, 1)
+    gt = Token(TokenType.GREATER, ">", None, 1, 1)
 
     # false == 2 > 1
     tokens = [
-        Token(TokenType.FALSE, "false", False, 1),
+        Token(TokenType.FALSE, "false", False, 1, 1),
         equal,
-        Token(TokenType.NUMBER, "2", 2, 1),
+        Token(TokenType.NUMBER, "2", 2, 1, 1),
         gt,
-        Token(TokenType.NUMBER, "1", 1, 1),
-        Token(TokenType.SEMICOLON, ";", None, 1),
-        Token(TokenType.EOF, "", None, 1),
+        Token(TokenType.NUMBER, "1", 1, 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1, 1),
+        Token(TokenType.EOF, "", None, 1, 1),
     ]
     statements = Parser(tokens).parse()
 
@@ -237,18 +237,18 @@ def test_parse_precedence_equalequal_gt():
 
 
 def test_parse_precedence_equalequal_gte():
-    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1)
-    gte = Token(TokenType.GREATER_EQUAL, ">=", None, 1)
+    equal = Token(TokenType.EQUAL_EQUAL, "==", None, 1, 1)
+    gte = Token(TokenType.GREATER_EQUAL, ">=", None, 1, 1)
 
     # false == 2 > 1
     tokens = [
-        Token(TokenType.FALSE, "false", False, 1),
+        Token(TokenType.FALSE, "false", False, 1, 1),
         equal,
-        Token(TokenType.NUMBER, "2", 2, 1),
+        Token(TokenType.NUMBER, "2", 2, 1, 1),
         gte,
-        Token(TokenType.NUMBER, "1", 1, 1),
-        Token(TokenType.SEMICOLON, ";", None, 1),
-        Token(TokenType.EOF, "", None, 1),
+        Token(TokenType.NUMBER, "1", 1, 1, 1),
+        Token(TokenType.SEMICOLON, ";", None, 1, 1),
+        Token(TokenType.EOF, "", None, 1, 1),
     ]
     statements = Parser(tokens).parse()
 
@@ -260,10 +260,10 @@ def test_parse_precedence_equalequal_gte():
 
 def test_number_leading_dot(capsys):
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/number/leading_dot.lox
-    dot = Token(TokenType.DOT, ".", None, 1)
-    number = Token(TokenType.NUMBER, "123", 123.0, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    dot = Token(TokenType.DOT, ".", None, 1, 1)
+    number = Token(TokenType.NUMBER, "123", 123.0, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # .123;
     tokens = [dot, number, semicolon, end]
@@ -277,12 +277,12 @@ def test_number_leading_dot(capsys):
 
 def test_associativity():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/assignment/associativity.lox
-    equals = Token(TokenType.EQUAL, "=", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    b = Token(TokenType.IDENTIFIER, "b", None, 1)
-    c = Token(TokenType.IDENTIFIER, "c", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    b = Token(TokenType.IDENTIFIER, "b", None, 1, 1)
+    c = Token(TokenType.IDENTIFIER, "c", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # a = b = c;
     tokens = [
@@ -302,13 +302,13 @@ def test_associativity():
 
 def test_assign_to_group_fails(capsys):
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/assignment/grouping.lox
-    equals = Token(TokenType.EQUAL, "=", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    string_a = Token(TokenType.STRING, '"a"', "a", 1)
-    lbracket = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rbracket = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    string_a = Token(TokenType.STRING, '"a"', "a", 1, 1)
+    lbracket = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rbracket = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # (a) = "a";
     tokens = [
@@ -330,15 +330,15 @@ def test_assign_to_group_fails(capsys):
 
 def test_block():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/block/scope.lox
-    equals = Token(TokenType.EQUAL, "=", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    inner = Token(TokenType.STRING, '"inner"', "inner", 1)
-    outer = Token(TokenType.STRING, '"outer"', "outer", 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    var = Token(TokenType.VAR, "var", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    inner = Token(TokenType.STRING, '"inner"', "inner", 1, 1)
+    outer = Token(TokenType.STRING, '"outer"', "outer", 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    var = Token(TokenType.VAR, "var", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # a = "inner";
     # { var a = "outer"; }
@@ -365,9 +365,9 @@ def test_block():
 
 def test_print_no_expression(capsys):
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/print/missing_argument.lox
-    print_ = Token(TokenType.PRINT, "print", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # print;
     tokens = [
@@ -385,16 +385,16 @@ def test_print_no_expression(capsys):
 
 def test_if_expression_else_expression():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/if/else.lox
-    if_ = Token(TokenType.IF, "if", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    true = Token(TokenType.TRUE, "true", None, 1)
-    print_ = Token(TokenType.PRINT, "print", None, 1)
-    good = Token(TokenType.STRING, '"good"', "good", 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    else_ = Token(TokenType.ELSE, "else", None, 1)
-    bad = Token(TokenType.STRING, '"bad"', "bad", 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    if_ = Token(TokenType.IF, "if", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    true = Token(TokenType.TRUE, "true", None, 1, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1, 1)
+    good = Token(TokenType.STRING, '"good"', "good", 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    else_ = Token(TokenType.ELSE, "else", None, 1, 1)
+    bad = Token(TokenType.STRING, '"bad"', "bad", 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # if (true) print "good"; else print "bad";
     tokens = [
@@ -421,18 +421,18 @@ def test_if_expression_else_expression():
 
 def test_if_expression_else_block():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/if/else.lox
-    if_ = Token(TokenType.IF, "if", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    false = Token(TokenType.FALSE, "false", None, 1)
-    nil = Token(TokenType.NIL, "nil", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    else_ = Token(TokenType.ELSE, "else", None, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    print_ = Token(TokenType.PRINT, "print", None, 1)
-    block = Token(TokenType.STRING, '"block"', "block", 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    if_ = Token(TokenType.IF, "if", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    false = Token(TokenType.FALSE, "false", None, 1, 1)
+    nil = Token(TokenType.NIL, "nil", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    else_ = Token(TokenType.ELSE, "else", None, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1, 1)
+    block = Token(TokenType.STRING, '"block"', "block", 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # if (false) nil; else { print "block"; }
     tokens = [
@@ -460,14 +460,14 @@ def test_if_expression_else_block():
 
 def test_if_expression_no_else():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/if/if.lox
-    if_ = Token(TokenType.IF, "if", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    true = Token(TokenType.TRUE, "true", None, 1)
-    print_ = Token(TokenType.PRINT, "print", None, 1)
-    good = Token(TokenType.STRING, '"good"', "good", 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    if_ = Token(TokenType.IF, "if", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    true = Token(TokenType.TRUE, "true", None, 1, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1, 1)
+    good = Token(TokenType.STRING, '"good"', "good", 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # if (true) print "good";
     tokens = [if_, lparen, true, rparen, print_, good, semicolon, end]
@@ -479,16 +479,16 @@ def test_if_expression_no_else():
 
 def test_if_block_no_else():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/if/if.lox
-    if_ = Token(TokenType.IF, "if", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    true = Token(TokenType.TRUE, "true", None, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    print_ = Token(TokenType.PRINT, "print", None, 1)
-    block = Token(TokenType.STRING, '"block"', "block", 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    if_ = Token(TokenType.IF, "if", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    true = Token(TokenType.TRUE, "true", None, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1, 1)
+    block = Token(TokenType.STRING, '"block"', "block", 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # if (true) { print "block"; }
     tokens = [if_, lparen, true, rparen, lbrace, print_, block, semicolon, rbrace, end]
@@ -500,18 +500,18 @@ def test_if_block_no_else():
 
 def test_dangling_else_binds_rightmost():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/if/dangling_else.lox
-    if_ = Token(TokenType.IF, "if", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    true = Token(TokenType.TRUE, "true", None, 1)
-    false = Token(TokenType.FALSE, "false", None, 1)
-    print_ = Token(TokenType.PRINT, "print", None, 1)
-    bad = Token(TokenType.STRING, '"bad"', "bad", 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    else_ = Token(TokenType.ELSE, "else", None, 1)
-    bad = Token(TokenType.STRING, '"bad"', "bad", 1)
-    good = Token(TokenType.STRING, '"good"', "good", 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    if_ = Token(TokenType.IF, "if", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    true = Token(TokenType.TRUE, "true", None, 1, 1)
+    false = Token(TokenType.FALSE, "false", None, 1, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1, 1)
+    bad = Token(TokenType.STRING, '"bad"', "bad", 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    else_ = Token(TokenType.ELSE, "else", None, 1, 1)
+    bad = Token(TokenType.STRING, '"bad"', "bad", 1, 1)
+    good = Token(TokenType.STRING, '"good"', "good", 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # if (true) if (false) print "bad"; else print "good";
     tokens = [
@@ -544,18 +544,18 @@ def test_dangling_else_binds_rightmost():
 
 def test_for_statement_condition(capsys):
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/statement_condition.lox
-    for_ = Token(TokenType.FOR, "for", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    var = Token(TokenType.VAR, "var", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    equals = Token(TokenType.EQUAL, "=", None, 1)
-    one = Token(TokenType.NUMBER, "1", 1, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    plus = Token(TokenType.PLUS, "+", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    for_ = Token(TokenType.FOR, "for", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    var = Token(TokenType.VAR, "var", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # for (var a = 1; {}; a = a + 1) {}
     tokens = [
@@ -590,19 +590,19 @@ def test_for_statement_condition(capsys):
 
 def test_for_statement_increment(capsys):
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/statement_increment.lox
-    for_ = Token(TokenType.FOR, "for", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    var = Token(TokenType.VAR, "var", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    equals = Token(TokenType.EQUAL, "=", None, 1)
-    one = Token(TokenType.NUMBER, "1", 1, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    lt = Token(TokenType.LESS, "<", None, 1)
-    two = Token(TokenType.NUMBER, "2", 2, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    for_ = Token(TokenType.FOR, "for", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    var = Token(TokenType.VAR, "var", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    lt = Token(TokenType.LESS, "<", None, 1, 1)
+    two = Token(TokenType.NUMBER, "2", 2, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # for (var a = 1; a < 2; {}) {}
     tokens = [
@@ -635,19 +635,19 @@ def test_for_statement_increment(capsys):
 
 def test_for_statement_initializer(capsys):
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/statement_initializer.lox
-    for_ = Token(TokenType.FOR, "for", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    lt = Token(TokenType.LESS, "<", None, 1)
-    two = Token(TokenType.NUMBER, "2", 2, 1)
-    equals = Token(TokenType.EQUAL, "=", None, 1)
-    plus = Token(TokenType.PLUS, "+", None, 1)
-    one = Token(TokenType.NUMBER, "1", 1, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    for_ = Token(TokenType.FOR, "for", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    lt = Token(TokenType.LESS, "<", None, 1, 1)
+    two = Token(TokenType.NUMBER, "2", 2, 1, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # for ({}; a < 2; a = a + 1) {}
     tokens = [
@@ -681,19 +681,19 @@ def test_for_statement_initializer(capsys):
 
 def test_for_single_expression_body():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/syntax.lox
-    for_ = Token(TokenType.FOR, "for", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    var = Token(TokenType.VAR, "var", None, 1)
-    c = Token(TokenType.IDENTIFIER, "c", None, 1)
-    equals = Token(TokenType.EQUAL, "=", None, 1)
-    zero = Token(TokenType.NUMBER, "0", 0, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    lt = Token(TokenType.LESS, "<", None, 1)
-    three = Token(TokenType.NUMBER, "3", 3, 1)
-    plus = Token(TokenType.PLUS, "+", None, 1)
-    one = Token(TokenType.NUMBER, "1", 1, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    for_ = Token(TokenType.FOR, "for", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    var = Token(TokenType.VAR, "var", None, 1, 1)
+    c = Token(TokenType.IDENTIFIER, "c", None, 1, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1, 1)
+    zero = Token(TokenType.NUMBER, "0", 0, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    lt = Token(TokenType.LESS, "<", None, 1, 1)
+    three = Token(TokenType.NUMBER, "3", 3, 1, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # for (var c = 0; c < 3;) c = c + 1;
     tokens = [
@@ -733,23 +733,23 @@ def test_for_single_expression_body():
 
 def test_for_block_body():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/syntax.lox
-    for_ = Token(TokenType.FOR, "for", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    var = Token(TokenType.VAR, "var", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    equals = Token(TokenType.EQUAL, "=", None, 1)
-    zero = Token(TokenType.NUMBER, "0", 0, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    lt = Token(TokenType.LESS, "<", None, 1)
-    three = Token(TokenType.NUMBER, "3", 3, 1)
-    equals = Token(TokenType.EQUAL, "=", None, 1)
-    plus = Token(TokenType.PLUS, "+", None, 1)
-    one = Token(TokenType.NUMBER, "1", 1, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "{", None, 1)
-    print_ = Token(TokenType.PRINT, "print", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    for_ = Token(TokenType.FOR, "for", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    var = Token(TokenType.VAR, "var", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1, 1)
+    zero = Token(TokenType.NUMBER, "0", 0, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    lt = Token(TokenType.LESS, "<", None, 1, 1)
+    three = Token(TokenType.NUMBER, "3", 3, 1, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "{", None, 1, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # for (var a = 0; a < 3; a = a + 1) {
     #   print a;
@@ -804,17 +804,17 @@ def test_for_block_body():
 
 def test_for_statement_body():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/for/syntax.lox
-    for_ = Token(TokenType.FOR, "for", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    false = Token(TokenType.FALSE, "false", False, 1)
-    true = Token(TokenType.TRUE, "true", True, 1)
-    if_ = Token(TokenType.IF, "if", None, 1)
-    one = Token(TokenType.NUMBER, "1", 1, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    two = Token(TokenType.NUMBER, "2", 2, 1)
-    else_ = Token(TokenType.ELSE, "else", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    for_ = Token(TokenType.FOR, "for", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    false = Token(TokenType.FALSE, "false", False, 1, 1)
+    true = Token(TokenType.TRUE, "true", True, 1, 1)
+    if_ = Token(TokenType.IF, "if", None, 1, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    two = Token(TokenType.NUMBER, "2", 2, 1, 1)
+    else_ = Token(TokenType.ELSE, "else", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # for (; false;) if (true) 1; else 2;
     tokens = [
@@ -846,18 +846,18 @@ def test_for_statement_body():
 
 def test_while_single_expression_body():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/while/syntax.lox
-    while_ = Token(TokenType.WHILE, "while", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    c = Token(TokenType.IDENTIFIER, "c", None, 1)
-    lt = Token(TokenType.LESS, "<", None, 1)
-    three = Token(TokenType.NUMBER, "3", 3, 1)
-    print_ = Token(TokenType.PRINT, "print", None, 1)
-    equals = Token(TokenType.EQUAL, "=", None, 1)
-    plus = Token(TokenType.PLUS, "+", None, 1)
-    one = Token(TokenType.NUMBER, "1", 1, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    while_ = Token(TokenType.WHILE, "while", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    c = Token(TokenType.IDENTIFIER, "c", None, 1, 1)
+    lt = Token(TokenType.LESS, "<", None, 1, 1)
+    three = Token(TokenType.NUMBER, "3", 3, 1, 1)
+    print_ = Token(TokenType.PRINT, "print", None, 1, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # while (c < 3) print c = c + 1;
     tokens = [
@@ -887,19 +887,19 @@ def test_while_single_expression_body():
 
 def test_while_block_body():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/while/syntax.lox
-    while_ = Token(TokenType.WHILE, "while", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    lt = Token(TokenType.LESS, "<", None, 1)
-    three = Token(TokenType.NUMBER, "3", 3, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "{", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    equals = Token(TokenType.EQUAL, "=", None, 1)
-    plus = Token(TokenType.PLUS, "+", None, 1)
-    one = Token(TokenType.NUMBER, "1", 1, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    while_ = Token(TokenType.WHILE, "while", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    lt = Token(TokenType.LESS, "<", None, 1, 1)
+    three = Token(TokenType.NUMBER, "3", 3, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "{", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    equals = Token(TokenType.EQUAL, "=", None, 1, 1)
+    plus = Token(TokenType.PLUS, "+", None, 1, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # while (a < 3) {
     #   a = a + 1;
@@ -932,17 +932,17 @@ def test_while_block_body():
 
 def test_while_statement_body():
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/while/syntax.lox
-    while_ = Token(TokenType.WHILE, "while", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    false = Token(TokenType.FALSE, "false", False, 1)
-    true = Token(TokenType.TRUE, "true", True, 1)
-    if_ = Token(TokenType.IF, "if", None, 1)
-    one = Token(TokenType.NUMBER, "1", 1, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    two = Token(TokenType.NUMBER, "2", 2, 1)
-    else_ = Token(TokenType.ELSE, "else", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    while_ = Token(TokenType.WHILE, "while", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    false = Token(TokenType.FALSE, "false", False, 1, 1)
+    true = Token(TokenType.TRUE, "true", True, 1, 1)
+    if_ = Token(TokenType.IF, "if", None, 1, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    two = Token(TokenType.NUMBER, "2", 2, 1, 1)
+    else_ = Token(TokenType.ELSE, "else", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # while (false) if (true) 1; else 2;
     tokens = [
@@ -971,11 +971,11 @@ def test_while_statement_body():
 
 
 def test_call_no_arguments():
-    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # foo();
     tokens = [foo, lparen, rparen, semicolon, end]
@@ -986,15 +986,15 @@ def test_call_no_arguments():
 
 
 def test_call_with_arguments():
-    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    string_a = Token(TokenType.STRING, '"a"', "a", 1)
-    one = Token(TokenType.NUMBER, "1", 1, 1)
-    comma = Token(TokenType.COMMA, ",", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    string_a = Token(TokenType.STRING, '"a"', "a", 1, 1)
+    one = Token(TokenType.NUMBER, "1", 1, 1, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # foo(a, "a", 1);
     tokens = [foo, lparen, a, comma, string_a, comma, one, rparen, semicolon, end]
@@ -1008,14 +1008,14 @@ def test_call_with_arguments():
 
 def test_call_too_many_arguments(capsys):
     # https://github.com/munificent/craftinginterpreters/blob/01e6f5b8f3e5dfa65674c2f9cf4700d73ab41cf8/test/function/too_many_arguments.lox
-    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    b = Token(TokenType.IDENTIFIER, "b", None, 1)
-    comma = Token(TokenType.COMMA, ",", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    b = Token(TokenType.IDENTIFIER, "b", None, 1, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # foo(a, a, ..., a, b);
     tokens = [foo, lparen] + [a, comma] * 255 + [b] + [rparen, semicolon, end]
@@ -1027,13 +1027,13 @@ def test_call_too_many_arguments(capsys):
 
 
 def test_function_declaration_no_parameters():
-    fun = Token(TokenType.FUN, "fun", None, 1)
-    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    fun = Token(TokenType.FUN, "fun", None, 1, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # fun foo() {}
     tokens = [fun, foo, lparen, rparen, lbrace, rbrace, end]
@@ -1044,16 +1044,16 @@ def test_function_declaration_no_parameters():
 
 
 def test_function_declaration_with_parameters():
-    fun = Token(TokenType.FUN, "fun", None, 1)
-    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    b = Token(TokenType.IDENTIFIER, "b", None, 1)
-    comma = Token(TokenType.COMMA, ",", None, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    fun = Token(TokenType.FUN, "fun", None, 1, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    b = Token(TokenType.IDENTIFIER, "b", None, 1, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # fun foo(a, b) {}
     tokens = [fun, foo, lparen, a, comma, b, rparen, lbrace, rbrace, end]
@@ -1065,16 +1065,16 @@ def test_function_declaration_with_parameters():
 
 def test_function_declaration_too_many_parameters(capsys):
     # https://github.com/munificent/craftinginterpreters/blob/01e6f5b8f3e5dfa65674c2f9cf4700d73ab41cf8/test/function/too_many_parameters.lox
-    fun = Token(TokenType.FUN, "fun", None, 1)
-    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    b = Token(TokenType.IDENTIFIER, "b", None, 1)
-    comma = Token(TokenType.COMMA, ",", None, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    fun = Token(TokenType.FUN, "fun", None, 1, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    b = Token(TokenType.IDENTIFIER, "b", None, 1, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # fun foo(a, a, ..., a, b) {}
     tokens = [fun, foo, lparen] + [a, comma] * 255 + [b] + [rparen, lbrace, rbrace, end]
@@ -1087,20 +1087,20 @@ def test_function_declaration_too_many_parameters(capsys):
 
 def test_function_declaration_missing_comma(capsys):
     # https://github.com/munificent/craftinginterpreters/blob/01e6f5b8f3e5dfa65674c2f9cf4700d73ab41cf8/test/function/missing_comma_in_parameters.lox
-    fun = Token(TokenType.FUN, "fun", None, 1)
-    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    b = Token(TokenType.IDENTIFIER, "b", None, 1)
-    c = Token(TokenType.IDENTIFIER, "c", None, 1)
-    d = Token(TokenType.IDENTIFIER, "d", None, 1)
-    e = Token(TokenType.IDENTIFIER, "e", None, 1)
-    f = Token(TokenType.IDENTIFIER, "f", None, 1)
-    comma = Token(TokenType.COMMA, ",", None, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    fun = Token(TokenType.FUN, "fun", None, 1, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    b = Token(TokenType.IDENTIFIER, "b", None, 1, 1)
+    c = Token(TokenType.IDENTIFIER, "c", None, 1, 1)
+    d = Token(TokenType.IDENTIFIER, "d", None, 1, 1)
+    e = Token(TokenType.IDENTIFIER, "e", None, 1, 1)
+    f = Token(TokenType.IDENTIFIER, "f", None, 1, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # fun foo(a, b c, d, e, f) {}
     tokens = [
@@ -1131,13 +1131,13 @@ def test_function_declaration_missing_comma(capsys):
 
 def test_function_declaration_missing_body(capsys):
     # https://github.com/munificent/craftinginterpreters/blob/01e6f5b8f3e5dfa65674c2f9cf4700d73ab41cf8/test/function/body_must_be_block.lox
-    fun = Token(TokenType.FUN, "fun", None, 1)
-    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    onetwothree = Token(TokenType.NUMBER, "123", 123, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    fun = Token(TokenType.FUN, "fun", None, 1, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    onetwothree = Token(TokenType.NUMBER, "123", 123, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # fun foo() 123
     tokens = [fun, foo, lparen, rparen, onetwothree, semicolon, end]
@@ -1149,13 +1149,13 @@ def test_function_declaration_missing_body(capsys):
 
 
 def test_function_declaration_missing_name(capsys):
-    fun = Token(TokenType.FUN, "fun", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    fun = Token(TokenType.FUN, "fun", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
     # fun (a) {}
     tokens = [fun, lparen, a, rparen, lbrace, rbrace, end]
     with pytest.raises(ParserError, match="Expect function name"):
@@ -1166,15 +1166,15 @@ def test_function_declaration_missing_name(capsys):
 
 
 def test_function_declaration_missing_parameter(capsys):
-    fun = Token(TokenType.FUN, "fun", None, 1)
-    foo = Token(TokenType.IDENTIFIER, "foo", None, 1)
-    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1)
-    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1)
-    a = Token(TokenType.IDENTIFIER, "a", None, 1)
-    comma = Token(TokenType.COMMA, ",", None, 1)
-    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1)
-    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    fun = Token(TokenType.FUN, "fun", None, 1, 1)
+    foo = Token(TokenType.IDENTIFIER, "foo", None, 1, 1)
+    lparen = Token(TokenType.LEFT_PAREN, "(", None, 1, 1)
+    rparen = Token(TokenType.RIGHT_PAREN, ")", None, 1, 1)
+    a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
+    comma = Token(TokenType.COMMA, ",", None, 1, 1)
+    lbrace = Token(TokenType.LEFT_BRACE, "{", None, 1, 1)
+    rbrace = Token(TokenType.RIGHT_BRACE, "}", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # fun foo(a, ) {}
     tokens = [fun, foo, lparen, a, comma, rparen, lbrace, rbrace, end]
@@ -1186,10 +1186,10 @@ def test_function_declaration_missing_parameter(capsys):
 
 
 def test_return_with_value():
-    ret = Token(TokenType.RETURN, "return", None, 1)
-    value = Token(TokenType.NUMBER, '"1"', 1, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    ret = Token(TokenType.RETURN, "return", None, 1, 1)
+    value = Token(TokenType.NUMBER, '"1"', 1, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # return 1;
     tokens = [ret, value, semicolon, end]
@@ -1200,9 +1200,9 @@ def test_return_with_value():
 
 
 def test_return_without_value_is_none():
-    ret = Token(TokenType.RETURN, "return", None, 1)
-    semicolon = Token(TokenType.SEMICOLON, ";", None, 1)
-    end = Token(TokenType.EOF, "", None, 1)
+    ret = Token(TokenType.RETURN, "return", None, 1, 1)
+    semicolon = Token(TokenType.SEMICOLON, ";", None, 1, 1)
+    end = Token(TokenType.EOF, "", None, 1, 1)
 
     # return;
     tokens = [ret, semicolon, end]

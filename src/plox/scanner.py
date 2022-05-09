@@ -42,6 +42,7 @@ class Scanner:
         self._tokens: list[Token] = []
 
         self._start = 0
+        self._lstart = 0
         self._current = 0
         self._lno = 1
 
@@ -54,13 +55,15 @@ class Scanner:
                 report(e.lno, "", e.message)
                 raise
 
-        self._tokens.append(Token(TokenType.EOF, "", None, self._lno))
+        self._tokens.append(
+            Token(TokenType.EOF, "", None, self._lno, self._col(eof=True))
+        )
 
         return list(self._tokens)
 
     def _add_token(self, kind: TokenType, literal: object = None) -> None:
         text = self._source[self._start : self._current]
-        self._tokens.append(Token(kind, text, literal, self._lno))
+        self._tokens.append(Token(kind, text, literal, self._lno, self._col()))
 
     def _advance(self) -> str:
         char = self._source[self._current]
@@ -77,6 +80,15 @@ class Scanner:
 
     def _at_end(self) -> bool:
         return self._current >= len(self._source)
+
+    def _col(self, eof: bool = False) -> int:
+        # Column index is 1-based, like line number.
+        if eof:
+            # At EOF, we introduce a phantom \0 character, but this
+            # is not actually scanned, and self._start will still point
+            # to the start of the last real token.
+            return self._current - self._lstart + 1
+        return self._start - self._lstart + 1
 
     def _match(self, char: str) -> bool:
         if self._peek() != char:
@@ -166,6 +178,7 @@ class Scanner:
             pass
         elif char == "\n":
             self._lno += 1
+            self._lstart = self._current
 
         elif char == '"':
             self._string()

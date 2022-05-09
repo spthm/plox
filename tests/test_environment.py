@@ -8,12 +8,16 @@ from plox.tokens import Token, TokenType
 
 @pytest.fixture(name="outer_foo")
 def outer_foo_():
-    return Variable(Token(TokenType.IDENTIFIER, "foo", None, 1))
+    return Variable(Token(TokenType.IDENTIFIER, "foo", None, 1, 1))
 
 
 @pytest.fixture(name="inner_foo")
 def inner_foo_():
-    return Variable(Token(TokenType.IDENTIFIER, "foo", None, 1))
+    # The environment and resolver rely on *different* expressions/tokens
+    # having *different* hash() values (cf. how inner_foo and outer_foo
+    # are both keys to the Bindings dict below). Since we use dataclasses,
+    # we therefore require that inner_foo cannot be value-equal to outer_foo.
+    return Variable(Token(TokenType.IDENTIFIER, "foo", None, 1, 2))
 
 
 def test_get_defined(outer_foo):
