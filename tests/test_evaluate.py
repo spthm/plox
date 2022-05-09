@@ -1,6 +1,6 @@
 import pytest
 
-from plox.ast import Assign, Binary, Grouping, Literal, Unary, evaluate
+from plox.ast import Assign, Binary, Bindings, Grouping, Literal, Unary, evaluate
 from plox.environment import Environment
 from plox.errors import ExecutionError
 from plox.tokens import Token, TokenType
@@ -36,12 +36,13 @@ def test_assignment():
     id_a = Token(TokenType.IDENTIFIER, "a", None, 1)
     literal_a = Literal("a")
 
-    # var a;
-    # a = "a"
-    env = Environment()
-    env.define(id_a, None)
+    # a = "a";
     expr = Assign(id_a, literal_a)
+    env = Environment()
+    env.resolve(Bindings.from_dict({expr: 0}))
 
+    # var a;
+    env.define(id_a, None)
     assert evaluate(expr, env) == literal_a.value
 
 
@@ -51,8 +52,9 @@ def test_assignment_undefined_variable():
     literal_a = Literal("a")
 
     # a = "a";
-    env = Environment()
     expr = Assign(id_a, literal_a)
+    env = Environment()
+    env.resolve(Bindings.from_dict({expr: 0}))
 
     with pytest.raises(ExecutionError, match="Undefined variable 'a'"):
         evaluate(expr, env)

@@ -1,72 +1,90 @@
 import pytest
 
-from plox.ast import Variable
+from plox.ast import Bindings, Variable
 from plox.environment import Environment
 from plox.errors import ExecutionError
 from plox.tokens import Token, TokenType
 
 
-@pytest.fixture(name="foo")
-def foo_():
+@pytest.fixture(name="outer_foo")
+def outer_foo_():
     return Variable(Token(TokenType.IDENTIFIER, "foo", None, 1))
 
 
-def test_get_defined(foo):
+@pytest.fixture(name="inner_foo")
+def inner_foo_():
+    return Variable(Token(TokenType.IDENTIFIER, "foo", None, 1))
+
+
+def test_get_defined(outer_foo):
     env = Environment()
-    env.define(foo.name, "foo")
+    env.resolve(Bindings.from_dict({outer_foo: 0}))
+    env.define(outer_foo.name, "foo")
 
-    assert env[foo] == "foo"
+    assert env[outer_foo] == "foo"
 
 
-def test_set_defined(foo):
+def test_set_defined(outer_foo):
     env = Environment()
-    env.define(foo.name, "foo")
+    env.resolve(Bindings.from_dict({outer_foo: 0}))
+    env.define(outer_foo.name, "foo")
 
-    env[foo] = "foobar"
-    assert env[foo] == "foobar"
+    env[outer_foo] = "foobar"
+    assert env[outer_foo] == "foobar"
 
 
-def test_get_undefined_raises(foo):
+def test_get_undefined_raises(outer_foo):
     env = Environment()
+    env.resolve(Bindings.from_dict({outer_foo: 0}))
 
     with pytest.raises(ExecutionError, match="Undefined variable 'foo'"):
-        _ = env[foo]
+        _ = env[outer_foo]
 
 
-def test_set_undefined_raises(foo):
+def test_set_undefined_raises(outer_foo):
     env = Environment()
+    env.resolve(Bindings.from_dict({outer_foo: 0}))
 
     with pytest.raises(ExecutionError, match="Undefined variable 'foo'"):
-        env[foo] = "foo"
+        env[outer_foo] = "foo"
 
 
-def test_get_with_enclosing(foo):
+def test_get_with_enclosing(outer_foo, inner_foo):
     enclosing = Environment()
-    enclosing.define(foo.name, "foo")
+    # 'foo' is defined in the outer environment ('enclosing') but
+    # accessed from the inner environment ('env').
+    enclosing.resolve(Bindings.from_dict({outer_foo: 0, inner_foo: 1}))
+    enclosing.define(outer_foo.name, "foo")
 
     env = Environment(enclosing=enclosing)
 
-    assert enclosing[foo] == "foo"
-    assert env[foo] == "foo"
+    assert env[inner_foo] == "foo"
 
 
-def test_set_with_enclosing(foo):
+def test_set_with_enclosing(outer_foo, inner_foo):
     enclosing = Environment()
-    enclosing.define(foo.name, "foo")
+    # 'foo' is defined in the outer environment ('enclosing') but
+    # modified from the inner environment ('env').
+    enclosing.resolve(Bindings.from_dict({outer_foo: 0, inner_foo: 1}))
+    enclosing.define(outer_foo.name, "foo")
 
     env = Environment(enclosing=enclosing)
-    env[foo] = "foobar"
+    env[inner_foo] = "foobar"
 
-    assert enclosing[foo] == "foobar"
-    assert env[foo] == "foobar"
+    assert enclosing[outer_foo] == "foobar"
+    assert env[inner_foo] == "foobar"
 
 
-def test_define_with_enclosing(foo):
+def test_define_with_enclosing(outer_foo, inner_foo):
     enclosing = Environment()
-    enclosing.define(foo.name, "foo")
+    # A variable named 'foo' is defined in the top-most environment ('enclosing'),
+    # and a different variable, also named 'foo', is defined in the inner
+    # environment ('env').
+    enclosing.resolve(Bindings.from_dict({outer_foo: 0, inner_foo: 0}))
+    enclosing.define(outer_foo.name, "foo")
 
     env = Environment(enclosing=enclosing)
-    env.define(foo.name, "foobar")
+    env.define(inner_foo.name, "foobar")
 
-    assert enclosing[foo] == "foo"
-    assert env[foo] == "foobar"
+    assert enclosing[outer_foo] == "foo"
+    assert env[inner_foo] == "foobar"
