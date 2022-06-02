@@ -1,7 +1,5 @@
 from time import time
 
-# pylint: disable=no-self-use
-
 
 class Clock:
     def arity(self) -> int:
