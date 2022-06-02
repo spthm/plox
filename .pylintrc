@@ -19,7 +19,6 @@ extension-pkg-allow-list=math
 disable=disallowed-name,
         missing-class-docstring,
         missing-function-docstring,
-        missing-method-docstring,
         missing-module-docstring,
         too-few-public-methods
 
