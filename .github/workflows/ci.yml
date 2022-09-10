@@ -44,12 +44,7 @@ jobs:
         path: .mypy_cache
 
     - name: Install dependencies
-      # poetry uses the default Python version (3.8); we need to point it to
-      # the correct executable. See also actions/setup-python issue #374,
-      # although this seems like a poetry bug.
-      run: |
-        poetry env use ${{ matrix.python-version }}
-        poetry install
+      run: poetry install
 
     - name: Check formatting with black and isort
       run: |
