@@ -25,7 +25,7 @@ jobs:
       run: pipx install poetry==1.1.13
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4.1.0
+      uses: actions/setup-python@v4.2.0
       with:
         python-version: ${{ matrix.python-version }}
         cache: "poetry"
@@ -44,12 +44,7 @@ jobs:
         path: .mypy_cache
 
     - name: Install dependencies
-      # poetry uses the default Python version (3.8); we need to point it to
-      # the correct executable. See also actions/setup-python issue #374,
-      # although this seems like a poetry bug.
-      run: |
-        poetry env use ${{ matrix.python-version }}
-        poetry install
+      run: poetry install
 
     - name: Check formatting with black and isort
       run: |
@@ -84,7 +79,7 @@ jobs:
         # Get our coverage configuration file (pyproject.toml).
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v4.1.0
+      - uses: actions/setup-python@v4.2.0
         with:
           python-version: "3.10"
 
