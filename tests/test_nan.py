@@ -13,7 +13,7 @@ def test_zero_div_zero_is_nan():
 
     v = evaluate(expr, Environment())
 
-    assert isnan(v)  # type: ignore
+    assert isnan(v)  # type: ignore[arg-type]
 
 
 def test_nan_eq_nan_false():
