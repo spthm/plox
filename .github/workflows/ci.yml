@@ -33,7 +33,7 @@ jobs:
     - name: Get Tox env
       id: tox-env
       run: |
-        echo ::set-output name=env::$(echo py${{ matrix.python-version }} | tr -d .)
+        echo env=$(echo py${{ matrix.python-version }} | tr -d .) >> $GITHUB_OUTPUT
 
     - name: Cache mypy cache
       uses: actions/cache@v3.0.9
