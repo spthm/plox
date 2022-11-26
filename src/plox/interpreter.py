@@ -6,14 +6,14 @@ from plox.errors import ExecutionError, report
 
 class Interpreter:
     def __init__(self) -> None:
-        self._env = Environment.from_globals({"clock": Clock()})
+        self._env = Environment.as_root({"clock": Clock()})
 
     def interpret(self, statements: list[Stmt]) -> None:
-        bindings = resolve_statements(statements)
-        self._env.resolve(bindings)
-        for statement in statements:
-            try:
+        try:
+            bindings = resolve_statements(statements, self._env.local_scope())
+            self._env.resolve(bindings)
+            for statement in statements:
                 execute(statement, self._env)
-            except ExecutionError as e:
-                report(e.token.lno, "", e.message)
-                raise
+        except ExecutionError as e:
+            report(e.token.lno, "", e.message)
+            raise

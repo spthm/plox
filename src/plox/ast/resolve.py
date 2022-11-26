@@ -61,8 +61,7 @@ def _resolve_local(expr: Bindable, scopes: list[Scope]) -> Bindings:
         if expr.name.lexeme in scope:
             return Bindings.from_dict({expr: distance})
 
-    # Assume this is a global variable.
-    return Bindings()
+    raise ExecutionError(f"Undefined variable '{expr.name.lexeme}'.", expr.name)
 
 
 def _resolve_list(lst: Sequence[Union[Expr, Stmt]], scopes: list[Scope]) -> Bindings:
@@ -192,6 +191,10 @@ def resolve(x: Return, scopes: list[Scope]) -> Bindings:
 def resolve(x: Var, scopes: list[Scope]) -> Bindings:
     bindings = Bindings()
     init_scope = scopes[0]
+
+    if x.name.lexeme in init_scope:
+        raise ExecutionError("Already a variable with this name in this scope.", x.name)
+
     # Add the declared variable to the scope so that it shadows any
     # outer variable with this name, but explicitly set it to None
     # so that we can detect if it is referenced from the initializer;
@@ -213,5 +216,9 @@ def resolve(x: Union[Expr, Stmt], scopes: list[Scope]) -> Bindings:
     return _resolve(x, scopes)
 
 
-def resolve_statements(statements: list[Stmt]) -> Bindings:
-    return _resolve_list(statements, [Scope()])
+def resolve_statements(
+    statements: list[Stmt], root_scope: Optional[Scope] = None
+) -> Bindings:
+    if root_scope is None:
+        root_scope = Scope()
+    return _resolve_list(statements, [root_scope])
