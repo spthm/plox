@@ -1,0 +1,5 @@
+# This is a hack to make dependabot use Python 3.9.
+# pyproject.toml specifies ^3.9, which dependabot (correctly!)
+# takes to mean any 3.x > 3.9 release is compatible, but this
+# can break the resulting poetry.lock for older (3.9+) releases.
+python-3.9
