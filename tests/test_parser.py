@@ -1060,7 +1060,9 @@ def test_function_declaration_with_parameters():
     statements = Parser(tokens).parse()
 
     assert len(statements) == 1
-    assert statements[0] == Function(foo, [a, b], Block([]))
+    assert statements[0] == Function(
+        foo, [Var(a, Literal(None)), Var(b, Literal(None))], Block([])
+    )
 
 
 def test_function_declaration_too_many_parameters(capsys):

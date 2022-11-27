@@ -165,7 +165,7 @@ def resolve(x: Function, scopes: list[Scope]) -> Bindings:
 
     fn_scope: Scope = Scope()
     for param in x.parameters:
-        fn_scope[param.lexeme] = True
+        fn_scope[param.name.lexeme] = True
 
     resolved = resolve(x.body, [fn_scope] + scopes)
     return resolved

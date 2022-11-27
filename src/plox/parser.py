@@ -59,19 +59,25 @@ class Parser:
 
     def _function_declaration(self, kind: str) -> Function:
         name = self._consume(TokenType.IDENTIFIER, f"Expect {kind} name.")
-        parameters: list[Token] = []
+        parameters: list[Var] = []
 
         self._consume(TokenType.LEFT_PAREN, f"Expect '(' after {kind} name.")
 
         # Account for zero-argument case.
         if not self._check(TokenType.RIGHT_PAREN):
             parameters.append(
-                self._consume(TokenType.IDENTIFIER, "Expect parameter name.")
+                Var(
+                    self._consume(TokenType.IDENTIFIER, "Expect parameter name."),
+                    Literal(None),
+                )
             )
 
             while self._match(TokenType.COMMA):
                 parameters.append(
-                    self._consume(TokenType.IDENTIFIER, "Expect parameter name.")
+                    Var(
+                        self._consume(TokenType.IDENTIFIER, "Expect parameter name."),
+                        Literal(None),
+                    )
                 )
 
         # The parser isn't confused, so we don't need to raise.

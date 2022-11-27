@@ -21,7 +21,7 @@ class Expression:
 @dataclass(frozen=True)
 class Function:
     name: Token
-    parameters: list[Token]
+    parameters: list[Var]
     body: Block
 
 
