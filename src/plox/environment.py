@@ -5,7 +5,6 @@ from typing import Optional
 # avoid circular dependencies by specifying the specific modules of ast.
 from plox.ast.expressions import Assign, Variable
 from plox.ast.resolve import Bindable, Bindings, Scope
-from plox.errors import ExecutionError
 from plox.tokens import Token
 
 
@@ -41,17 +40,14 @@ class Environment:
         return env
 
     def _get_values(self, expr: Bindable) -> dict[str, object]:
-        try:
-            distance = self._bindings[expr]
-        except KeyError:
-            raise ExecutionError(
-                f"Undefined variable '{expr.name.lexeme}'.", expr.name
-            ) from None
-
+        assert expr in self._bindings, f"_get_values() on unresolved expr {expr}"
+        distance = self._bindings[expr]
         return self._ascend(distance)._locals  # pylint: disable=protected-access
 
     def __getitem__(self, expr: Variable) -> object:
-        return self._get_values(expr)[expr.name.lexeme]
+        values = self._get_values(expr)
+        assert expr.name.lexeme in values, f"__getitem__() on expr not in locals {expr}"
+        return values[expr.name.lexeme]
 
     def __setitem__(self, expr: Assign, value: object) -> None:
         values = self._get_values(expr)
