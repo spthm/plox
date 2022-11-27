@@ -40,7 +40,7 @@ class LoxFunction:
     def call(self, arguments: list[object]) -> object:
         env = Environment(self._closure)
         for (parameter, argument) in zip(self._declaration.parameters, arguments):
-            env.define(parameter.name, argument)
+            env.define(parameter, argument)
 
         try:
             execute(self._declaration.body, env)
@@ -80,7 +80,7 @@ def execute(stmt: Expression, env: Environment) -> None:
 @_execute.register(Function)
 def execute(stmt: Function, env: Environment) -> None:
     function = LoxFunction(stmt, env)
-    env.define(stmt.name, function)
+    env.define(stmt, function)
 
 
 @overload
@@ -110,7 +110,7 @@ def execute(stmt: Return, env: Environment) -> None:
 @_execute.register(Var)
 def execute(stmt: Var, env: Environment) -> None:
     value = evaluate(stmt.initializer, env)
-    env.define(stmt.name, value)
+    env.define(stmt, value)
 
 
 @overload

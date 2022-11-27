@@ -1,6 +1,6 @@
 import pytest
 
-from plox.ast import Assign, Binary, Bindings, Grouping, Literal, Unary, evaluate
+from plox.ast import Assign, Binary, Bindings, Grouping, Literal, Unary, Var, evaluate
 from plox.environment import Environment
 from plox.errors import ExecutionError
 from plox.tokens import Token, TokenType
@@ -42,7 +42,7 @@ def test_assignment():
     env.resolve(Bindings.from_dict({expr: 0}))
 
     # var a;
-    env.define(id_a, None)
+    env.define(Var(id_a, Literal(None)), None)
     assert evaluate(expr, env) == literal_a.value
 
 

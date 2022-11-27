@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, Union
 
 # avoid circular dependencies by specifying the specific modules of ast.
 from plox.ast.expressions import Assign, Variable
 from plox.ast.resolve import Bindable, Bindings, Scope
-from plox.tokens import Token
+from plox.ast.statements import Function, Var
 
 
 class Environment:
@@ -28,8 +28,8 @@ class Environment:
     def local_scope(self) -> Scope:
         return {k: True for k in self._locals}
 
-    def define(self, name: Token, value: object) -> None:
-        self._locals[name.lexeme] = value
+    def define(self, stmt: Union[Function, Var], value: object) -> None:
+        self._locals[stmt.name.lexeme] = value
 
     def _ascend(self, distance: int) -> Environment:
         env = self
