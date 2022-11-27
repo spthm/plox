@@ -35,6 +35,11 @@ class Bindings:
     def __contains__(self, expr: Bindable) -> bool:
         return expr in self._distances
 
+    def __eq__(self, rhs: object) -> bool:
+        if not isinstance(rhs, Bindings):
+            return NotImplemented
+        return self._distances == rhs._distances
+
     def __getitem__(self, expr: Bindable) -> int:
         return self._distances[expr]
 

@@ -1,8 +1,8 @@
 import pytest
 
 from plox.ast import Bindings, Variable
+from plox.ast.resolve import Scope
 from plox.environment import Environment
-from plox.errors import ExecutionError
 from plox.tokens import Token, TokenType
 
 
@@ -35,22 +35,6 @@ def test_set_defined(outer_foo):
 
     env[outer_foo] = "foobar"
     assert env[outer_foo] == "foobar"
-
-
-def test_get_undefined_raises(outer_foo):
-    env = Environment()
-    env.resolve(Bindings.from_dict({outer_foo: 0}))
-
-    with pytest.raises(ExecutionError, match="Undefined variable 'foo'"):
-        _ = env[outer_foo]
-
-
-def test_set_undefined_raises(outer_foo):
-    env = Environment()
-    env.resolve(Bindings.from_dict({outer_foo: 0}))
-
-    with pytest.raises(ExecutionError, match="Undefined variable 'foo'"):
-        env[outer_foo] = "foo"
 
 
 def test_get_with_enclosing(outer_foo, inner_foo):
@@ -92,3 +76,19 @@ def test_define_with_enclosing(outer_foo, inner_foo):
 
     assert enclosing[outer_foo] == "foo"
     assert env[inner_foo] == "foobar"
+
+
+def test_root_local_scope():
+    root = Environment.as_root({"foo": "foo", "bar": "bar"})
+    assert root.local_scope() == Scope({"foo": True, "bar": True})
+
+
+def test_inner_local_scope(inner_foo):
+    root = Environment.as_root({"foo": "foo", "bar": "bar"})
+
+    env = Environment(enclosing=root)
+    env.resolve(Bindings.from_dict({inner_foo: 0}))
+    env.define(inner_foo.name, "foo")
+
+    assert root.local_scope() == Scope({"foo": True, "bar": True})
+    assert env.local_scope() == Scope({"foo": True})

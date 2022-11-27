@@ -46,20 +46,6 @@ def test_assignment():
     assert evaluate(expr, env) == literal_a.value
 
 
-def test_assignment_undefined_variable():
-    # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/assignment/undefined.lox
-    id_a = Token(TokenType.IDENTIFIER, "a", None, 1, 1)
-    literal_a = Literal("a")
-
-    # a = "a";
-    expr = Assign(id_a, literal_a)
-    env = Environment()
-    env.resolve(Bindings.from_dict({expr: 0}))
-
-    with pytest.raises(ExecutionError, match="Undefined variable 'a'"):
-        evaluate(expr, env)
-
-
 @pytest.mark.parametrize("value", [False, None])
 def test_unary_bang_falsey_literals(value):
     # https://github.com/munificent/craftinginterpreters/blob/6c2ea6f7192910053a78832f0cc34ad56b17ce7c/test/operator/not.lox
