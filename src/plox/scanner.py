@@ -1,3 +1,5 @@
+from typing import Optional
+
 from plox.errors import ScannerError, report
 from plox.tokens import Token, TokenType
 
@@ -37,14 +39,14 @@ def _is_digit(char: str) -> bool:
 
 
 class Scanner:
-    def __init__(self, source: str) -> None:
+    def __init__(self, source: str, start_lno: Optional[int] = None) -> None:
         self._source = source
         self._tokens: list[Token] = []
 
         self._start = 0
         self._lstart = 0
         self._current = 0
-        self._lno = 1
+        self._lno = 1 if start_lno is None else start_lno
 
     def scan_tokens(self) -> list[Token]:
         while not self._at_end():
