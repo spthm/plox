@@ -56,3 +56,6 @@ class Environment:
     def __setitem__(self, expr: Assign, value: object) -> None:
         values = self._get_values(expr)
         values[expr.name.lexeme] = value
+
+    def __str__(self) -> str:
+        return f"{self._locals}"

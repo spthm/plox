@@ -51,6 +51,9 @@ class Bindings:
         merged._distances = self._distances | rhs._distances
         return merged
 
+    def __str__(self) -> str:
+        return str(self._distances)
+
     def _check_merge(self, rhs: Bindings) -> None:
         # pylint: disable=protected-access
         assert not set(self._distances.keys()) & set(rhs._distances.keys())
