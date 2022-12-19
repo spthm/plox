@@ -54,7 +54,7 @@ skip_empty = true
 [tool.coverage.paths]
 source = [
     "src/plox/",
-    ".tox/*/site-packages/plox/"
+    ".tox*/*/lib/python*/site-packages/plox",
 ]
 
 [tool.isort]
