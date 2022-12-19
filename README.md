@@ -4,7 +4,7 @@ A Python implementation of the Lox language
 
 ## Developer Quickstart
 
-[`poetry`][poetry] is a dependency.
+[`poetry`][poetry]>=1.2 is a dependency.
 
 Install this package and its dependencies,
 
