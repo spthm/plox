@@ -11,6 +11,13 @@ from plox.ast.statements import Function, Var
 class Environment:
     def __init__(self, enclosing: Optional[Environment] = None) -> None:
         self._enclosing: Optional[Environment] = enclosing
+        # It is safe for all environments to share the same bindings because,
+        #   1. We only ever call .resolve() on the root Environment; the bindings are
+        #      never updated through a different Environment.
+        #   2. We OR update bindings in .resolve(), so previously-resolved bindings
+        #      (e.g., in a function closure) will not be erased by later resolves.
+        #   3. Binding keys are tokens, which are unique across their name and position
+        #      in the source code, so we cannot overwrite a binding.
         self._bindings: Bindings = (
             enclosing._bindings if enclosing is not None else Bindings()
         )
