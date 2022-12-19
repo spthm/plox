@@ -60,7 +60,7 @@ jobs:
     - name: Run tests
       # We only want to *see* test results in this step, not coverage info.
       run: |
-        poetry run tox -e ${{ steps.tox-env.outputs.env }} -- --cov --cov-config=pyproject.toml --cov-report=
+        poetry run -- tox run -e ${{ steps.tox-env.outputs.env }} -- --cov --cov-config=pyproject.toml --cov-report=
 
     - name: Upload coverage data for Python ${{ matrix.python-version }}
       uses: actions/upload-artifact@v3
