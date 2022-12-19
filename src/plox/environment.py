@@ -44,11 +44,13 @@ class Environment:
         distance = self._bindings[expr]
         return self._ascend(distance)._locals  # pylint: disable=protected-access
 
+    # TODO: rename (or also add) 'get'?
     def __getitem__(self, expr: Variable) -> object:
         values = self._get_values(expr)
         assert expr.name.lexeme in values, f"__getitem__() on expr not in locals {expr}"
         return values[expr.name.lexeme]
 
+    # TODO: rename 'assign'?
     def __setitem__(self, expr: Assign, value: object) -> None:
         values = self._get_values(expr)
         values[expr.name.lexeme] = value

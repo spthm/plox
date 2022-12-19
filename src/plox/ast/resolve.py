@@ -19,6 +19,8 @@ from .expressions import (
 from .statements import Block, Expression, Function, If, Print, Return, Stmt, Var, While
 
 Bindable = Union[Assign, Variable]
+# TODO: implement Scope(s) as an actual class, with a .push() context manager,
+#       or add an _enter_scope(scopes) context manager, etc.
 Scope = dict[str, Optional[bool]]
 
 
@@ -50,6 +52,7 @@ class Bindings:
         return self
 
     def __or__(self, rhs: Bindings) -> Bindings:
+        # TODO: only run this check when a debug flag is set?
         self._check_merge(rhs)
 
         merged = self.__class__()
