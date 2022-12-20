@@ -3,7 +3,7 @@ ci:
 
 repos:
   - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
+    rev: 5.11.3
     hooks:
     - id: isort
       language_version: python3.9
