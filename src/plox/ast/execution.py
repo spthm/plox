@@ -39,7 +39,7 @@ class LoxFunction:
 
     def call(self, arguments: list[object]) -> object:
         env = Environment(self._closure)
-        for (parameter, argument) in zip(self._declaration.parameters, arguments):
+        for parameter, argument in zip(self._declaration.parameters, arguments):
             env.define(parameter, argument)
 
         try:
