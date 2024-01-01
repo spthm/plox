@@ -63,7 +63,7 @@ jobs:
         poetry run -- tox run -e ${{ steps.tox-env.outputs.env }} -- --cov --cov-config=pyproject.toml --cov-report=
 
     - name: Upload coverage data for Python ${{ matrix.python-version }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-data
         path: ".coverage.${{ steps.tox-env.outputs.env }}"
