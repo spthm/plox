@@ -58,8 +58,7 @@ def _is_numeric_or_string(*args: object) -> bool:
 
 
 class OpCheck(Protocol):
-    def __call__(self, *args: object) -> bool:
-        ...
+    def __call__(self, *args: object) -> bool: ...
 
 
 _binary_op_fn = {
