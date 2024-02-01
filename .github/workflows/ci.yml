@@ -98,4 +98,4 @@ jobs:
           python -m coverage report
 
       - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
