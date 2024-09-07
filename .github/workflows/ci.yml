@@ -67,6 +67,8 @@ jobs:
       with:
         name: coverage-data-${{ matrix.python-version }}
         path: ".coverage.${{ steps.tox-env.outputs.env }}"
+        include-hidden-files: true
+        if-no-files-found: error
 
   coverage:
     name: Produce coverage report
