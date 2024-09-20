@@ -16,7 +16,7 @@ pep8-naming = "^0.14.1"
 tox = "^4.20.0"
 isort = "^5.13.2"
 mypy = "^1.11"
-pylint = "^3.2.7"
+pylint = "^3.3.0"
 pytest = "^8.3.3"
 
 [tool.poetry.scripts]
