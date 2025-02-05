@@ -15,7 +15,7 @@ flake8 = "^7.1.1"
 pep8-naming = "^0.14.1"
 tox = "^4.24.1"
 isort = "^6.0.0"
-mypy = "^1.14"
+mypy = "^1.15"
 pylint = "^3.3.3"
 pytest = "^8.3.4"
 
